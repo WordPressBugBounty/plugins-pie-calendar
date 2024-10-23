@@ -183,6 +183,13 @@
     white-space: normal;
 }
 
+/* Pie Calendar Info */
+.piecal-info p {
+    margin-block-start: 0;
+    margin-block-end: 0;
+    margin-bottom: 0;
+}
+
 /* Pie Calendar Footer */
 .piecal-footer {
     text-align: center;

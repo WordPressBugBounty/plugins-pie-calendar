@@ -9,7 +9,7 @@
  * Plugin Name:       Pie Calendar
  * Plugin URI:        https://piecalendar.com
  * Description:       Turn any post type into a calendar event and display it on a calendar.
- * Version:           1.2.3
+ * Version:           1.2.4
  * Author:            Elijah Mills & Jonathan Jernigan
  * Author URI:        https://piecalendar.com/about
  * License:           GPL-2.0+
@@ -25,7 +25,7 @@ if ( ! defined( 'WPINC' ) ) {
     die;
 }
 
-define( 'PIECAL_VERSION', '1.2.3' );
+define( 'PIECAL_VERSION', '1.2.4' );
 define( 'PIECAL_PATH', plugin_dir_url( __FILE__ ) );
 define( 'PIECAL_DIR', plugin_dir_path( __FILE__ ) );
 
@@ -60,7 +60,9 @@ add_filter( 'script_loader_tag', function ( $tag, $handle ) {
 
 
 // Register required post meta fields.
-add_action( 'init', function() {
+add_action( 'init', 'piecal_register_post_meta' );
+
+function piecal_register_post_meta() {
 	register_post_meta( '', '_piecal_is_event', [
 		'show_in_rest' => true,
 		'single' => true,
@@ -94,8 +96,38 @@ add_action( 'init', function() {
         }
 	] );
 
-} );
+	add_action( 'admin_notices', 'piecal_admin_notice' );
 
+};
+
+function piecal_admin_notice() {
+	if( isset( $_GET['piecal-dismiss-notice'] ) ) {
+		update_option( 'piecal_hide_onboarding_notice', true );
+		return;
+	}
+
+	if( get_option( 'piecal_hide_onboarding_notice' ) ) {
+		return;
+	}
+
+	?>
+	<div class="notice notice-success">
+	<p><?php _e( "<p>Pie Calendar has been activated.</p> 
+				<details>
+					<summary>Quick Start Guide</summary>
+					<ul>
+						<li><strong>Step 1:</strong> Edit any post, page, or custom post type and enable the <strong>Show on Calendar</strong> toggle.</li>
+						<li><strong>Step 2:</strong> Set a start date and time.</li>
+						<li><strong>Step 3:</strong> Add the <code>[piecal]</code> shortcode wherever you want to display your calendar.</li>
+					</ul>
+					<p>That's it! Check out <a href='https://www.youtube.com/watch?v=ncdab1v_B1M'>this video</a> to learn how get started in <strong>under 4 minutes.</strong></p>
+					<p>Or <a href='https://docs.piecalendar.com/'>click here</a> to view our extensive documentation.</p>
+				</details>
+				<p><a href='?piecal-dismiss-notice=true'>Dismiss this notice.</a></p>", 'piecal' ); 
+	?></p>
+	</div>
+	<?php
+}
 
 // Load our custom meta script for Gutenberg
 add_action( 'enqueue_block_editor_assets', function() {
@@ -194,7 +226,7 @@ function piecal_site_gmt_offset( $offset = null ) {
 	}
 
 	// Early return for if the gmt_offset option is missing.
-	if( $gmt_offset == '+00:00' ) {
+	if( $gmt_offset === '+00:00' ) {
 		return $gmt_offset;
 	}
 
@@ -224,12 +256,9 @@ function piecal_site_gmt_offset( $offset = null ) {
 add_action( 'piecal_after_core_frontend_scripts', 'piecal_add_php_vars_to_js' );
 
 function piecal_add_php_vars_to_js() { 
-    // Add To Calendar providers
-    $allowedProviders = get_option('piecal_add_to_calendar_checkboxes');
     $useAdaptiveTimezones = apply_filters('piecal_use_adaptive_timezones', false);
 
     wp_localize_script( 'piecal-utils', 'piecalVars', [
-        'enabledProviders' => $allowedProviders,
         'useAdaptiveTimezones' => $useAdaptiveTimezones
     ] );
 }

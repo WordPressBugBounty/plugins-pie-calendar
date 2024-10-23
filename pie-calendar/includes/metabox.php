@@ -24,12 +24,15 @@ if ( ! function_exists( 'piecal_classic_metabox' ) ) {
 
         $usesGutenberg = use_block_editor_for_post_type( $post_type );
 
+        // Translators: Label for Pie Calendar classic metabox.
+        $classicMetaboxLabel = __( 'Calendar', 'piecal' );
+
         if( ( $usesGutenberg != 1 || 
             is_plugin_active('classic-editor/classic-editor.php') ) && 
             !in_array( $post_type, $unsupported_post_types ) ) {
             add_meta_box(
                 'piecalendar-metabox',
-                __( 'Calendar', 'piecal' ),
+                $classicMetaboxLabel,
                 'piecal_classic_metabox_callback'
             );
         }
@@ -75,19 +78,31 @@ if ( ! function_exists( 'piecal_classic_metabox_callback' ) ) {
         </style>
         <div class="piecal-metabox-wrapper">
             <label>
-                Post Is Event
+                <?php 
+                /* Translators: Label for post type toggle in Pie Calendar classic metabox. */
+                echo __('Post Is Event', 'piecal'); 
+                ?>
                 <input type="checkbox" name="piecal_is_event" <?php echo esc_attr( $isEventChecked ); ?> value="1">
             </label>
             <label>
-                All Day Event
+                <?php 
+                /* Translators: Label for all day event toggle in Pie Calendar classic metabox. */
+                echo __('All Day Event', 'piecal'); 
+                ?>
                 <input type="checkbox" name="piecal_is_allday" <?php echo esc_attr( $isAlldayChecked ); ?> value="1">
             </label>
             <label>
-                Start Date
+                <?php 
+                /* Translators: Label for start date in Pie Calendar classic metabox. */
+                echo __('Start Date', 'piecal'); 
+                ?>
                 <input type="datetime-local" name="piecal_start_date" value="<?php echo esc_attr( $startDate ); ?>">
             </label>
             <label>
-                End Date
+                <?php 
+                /* Translators: Label for end date in Pie Calendar classic metabox. */
+                echo __('End Date', 'piecal'); 
+                ?>
                 <input type="datetime-local" name="piecal_end_date" value="<?php echo esc_attr( $endDate ); ?>"> 
             </label>
         </div>

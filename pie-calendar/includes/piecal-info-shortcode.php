@@ -3,12 +3,18 @@
 add_shortcode('piecal-info', 'render_piecal_info');
 
 function render_piecal_info( $atts ) {
+    do_action( 'piecal_before_info', $atts );
+
     require_once( PIECAL_DIR . '/includes/utils/General.php' );
+    require_once( PIECAL_DIR . '/includes/utils/Time.php' );
+
+    wp_enqueue_style('piecalCSS');
 
     if( !get_post_meta( get_the_ID(), '_piecal_is_event', true ) ) 
         return;
 
-    $allowedFragments = ['start', 'end', 'timezone', 'all', "allday", "timezone"];
+    $allowedFragments = ['start', 'end', 'timezone', 'all', 'allday'];
+    $allowedFragments = apply_filters( 'piecal_info_allowed_fragments', $allowedFragments );
     
     if( isset( $atts['fragments'] ) && !empty( $atts['fragments'] ) ) {
         $atts['fragments'] = Piecal\Utils\General::filterArrayByAllowlist( $atts['fragments'], $allowedFragments );
@@ -32,29 +38,9 @@ function render_piecal_info( $atts ) {
     }
 
     $show_timezone = true;
-    $timezoneObj = new DateTimeZone( $_GET['timezone'] ?? wp_timezone_string() );
-
-    if ( isset( $_GET['eventstart'] ) && is_numeric( $_GET['eventstart'] ) && $timezoneObj ) {
-        $startDate = sanitize_text_field( $_GET['eventstart'] );
-        
-        if ( $date = new DateTime( '@' . $startDate ) ) {
-            $date->setTimezone( $timezoneObj );
-            $startDate     = $date->format( "Y-m-d H:i:s" );
-        }
-    } else {
-        $startDate = get_post_meta(get_the_ID(), apply_filters( 'piecal_start_date_meta_key', '_piecal_start_date' ), true );
-    }
-
-    if ( isset( $_GET['eventend'] ) && is_numeric( $_GET['eventend'] ) && $_GET['eventend'] != 0 && $timezoneObj ) {
-        $endDate = sanitize_text_field( $_GET['eventend'] );
-        
-        if ( $date = new DateTime( '@' . $endDate ) ) {
-            $date->setTimezone( $timezoneObj );
-            $endDate       = $date->format( "Y-m-d H:i:s" );
-        }
-    } else {
-        $endDate = get_post_meta(get_the_ID(), apply_filters( 'piecal_end_date_meta_key', '_piecal_end_date' ), true );
-    }
+    
+    $startDate = Piecal\Utils\Time::getStartDate();
+    $endDate = Piecal\Utils\Time::getEndDate();
 
     $start = $startDate ? date( $format, strtotime( $startDate ) ) : false;
     $start_date_only = $startDate ? date( $format_date_only, strtotime( $startDate ) ) : false;
@@ -84,28 +70,33 @@ function render_piecal_info( $atts ) {
     ob_start();
     ?>
     <div class="piecal-info">
-        <p class="piecal-info__date">
-            <?php
-            // Start date only
-            if( $start && in_array('start', $atts['fragments'] ?? [] ) ) {
-                echo $info_string_start;
+        <script>
+            <?php do_action( 'piecal_info_scripts' ); ?>
+        </script>
+        <?php
+        // Start date only
+        if( $start && Piecal\Utils\General::foundInArray( ['start', 'all'], $atts['fragments'] ?? [] ) ) {
+            if( empty( $allday ) ) {
+                echo "<p class='piecal-info__start'>" . $info_string_start . "</p>";
+            } else {
+                echo "<p class='piecal-info__start'>" . $info_string_start_date_only . "</p>";
             }
+        }
 
-            // Start & end date, not all day
-            if( $start && $end && in_array('all', $atts['fragments'] ?? [] ) ) {
-                echo $info_string_start . '<br>' . $info_string_end;
+        // End date
+        if( $end && Piecal\Utils\General::foundInArray( ['end', 'all'], $atts['fragments'] ?? [] ) ) {
+            if( empty( $allday ) ) {
+                echo "<p class='piecal-info__end'>" . $info_string_end . "</p>";
+            } else {
+                echo "<p class='piecal-info__end'>" . $info_string_end_date_only . "</p>";
             }
+        }
 
-            // End date
-            if( $end && in_array('end', $atts['fragments'] ?? [] ) ) {
-                echo $info_string_end;
-            }
-
-            if( $allday && Piecal\Utils\General::foundInArray( ['allday', 'all'], $atts['fragments'] ?? [] ) ) {
-                echo "<br>" . $info_string_allday;
-            }
-            ?>
-        </p>
+        // All day string
+        if( $allday && Piecal\Utils\General::foundInArray( ['allday', 'all'], $atts['fragments'] ?? [] ) ) {
+            echo "<p class='piecal-info__allday'>" . $info_string_allday . "</p>";
+        }
+        ?>
         <?php if( empty($allday) && $show_timezone === true && Piecal\Utils\General::foundInArray( ['timezone', 'all'], $atts['fragments'] ?? [] ) ) { ?>
             <p class="piecal-info__timezone">
                 <?php echo $timezone; ?>
@@ -113,5 +104,7 @@ function render_piecal_info( $atts ) {
         <?php } ?>
     </div>
     <?php
+
+    do_action( 'piecal_after_info', $atts );
     return ob_get_clean();
 }

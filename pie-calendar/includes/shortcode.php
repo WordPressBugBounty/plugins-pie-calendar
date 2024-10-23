@@ -53,7 +53,7 @@ if ( ! function_exists( 'piecal_render_calendar' ) ) {
             $allday = get_post_meta(get_the_ID(), '_piecal_is_allday') ? get_post_meta(get_the_ID(), '_piecal_is_allday', true) : "false";
 
             // Force all day events to start at 12:00.
-            if( $allday == true ) {
+            if( $allday == true && $allday != "false" ) {
                 $startDate = new DateTime( $startDate );
                 $startDate = $startDate->setTime( 12, 0, 0 );
                 $startDate = $startDate->format('Y-m-d\TH:i:s');
@@ -226,7 +226,7 @@ if ( ! function_exists( 'piecal_render_calendar' ) ) {
                             Alpine.store("calendarEngine").eventUrl = url.toString();
                         }
 
-                        <?php do_action('piecal_additional_event_click_js'); ?>
+                        <?php do_action( 'piecal_additional_event_click_js' ); ?>
 
                         if( info.jsEvent.type == "keydown" ) {
                             setTimeout( () => {
@@ -248,6 +248,8 @@ if ( ! function_exists( 'piecal_render_calendar' ) ) {
                             event.end = end;
                         }
 
+                        <?php do_action( 'piecal_additional_event_data_transform_js' ); ?>
+
                         return event;  
                     },
                     dateClick: function( info ) {
@@ -255,6 +257,8 @@ if ( ! function_exists( 'piecal_render_calendar' ) ) {
 
                         piecalChangeView('listDay');
                         this.gotoDate(info.dateStr);
+
+                        <?php do_action( 'piecal_additional_date_click_js' ); ?>
                     },
                     eventDidMount: function( info ) {
                         let link = info.el;
@@ -312,6 +316,8 @@ if ( ! function_exists( 'piecal_render_calendar' ) ) {
                             /* Translators: Text describing span of multi-day event. */
                             link.setAttribute('aria-label', `${descriptionText} ${startDate} ${startTime} ${spanText} ${endDate} ${endTime} - ${info.event.title}`);
                         }
+
+                        <?php do_action( 'piecal_additional_event_did_mount_js' ); ?>
                     },
                     dayCellDidMount: function( info ) {
                         let dayLink = info.el.querySelector('.fc-daygrid-day-top a');
@@ -343,6 +349,8 @@ if ( ! function_exists( 'piecal_render_calendar' ) ) {
                                 }, 100);
                             }
                         })
+
+                        <?php do_action( 'piecal_additional_day_cell_did_mount_js' ); ?>
                     },
                     dayHeaderContent: function( info ) {
                         let overriddenDayHeaderViews = ['dayGridMonth', 'timeGridWeek', 'dayGridWeek'];
@@ -350,6 +358,8 @@ if ( ! function_exists( 'piecal_render_calendar' ) ) {
                         if( overriddenDayHeaderViews.includes(info.view.type) ) {
                             return '';
                         }
+
+                        <?php do_action( 'piecal_additional_day_header_content_js' ); ?>
 
                         return info.text;
                     },
@@ -367,6 +377,8 @@ if ( ! function_exists( 'piecal_render_calendar' ) ) {
                                                        <span class="piecal-grid-day-header-text piecal-grid-day-header-text--short">${shortDayName}</span>
                                                        <span class="piecal-grid-day-header-text piecal-grid-day-header-text--single-letter">${singleLetterDayName}</span>`;
                         }
+
+                        <?php do_action( 'piecal_additional_day_header_did_mount_js' ); ?>
                     },
                     <?php 
                     foreach( $customCalendarProps as $prop ) echo $prop;
@@ -604,7 +616,7 @@ if ( ! function_exists( 'piecal_render_calendar' ) ) {
         <div class="piecal-footer">
             <?php
             if( !isset( $atts['hidetimezone'] ) && !isset($atts['adaptivetimezone']) && apply_filters('piecal_use_adaptive_timezones', false) ) {
-                /* Translators: Pie Calendar footer text. */
+                /* Translators: This string is for displaying the viewer's time zone via the Pie Calendar Info shortcode */
                 $footer_text = __( 'Event times are listed in your local time zone: ', 'piecal' );
 
                 echo apply_filters('piecal-footer', $footer_text . "<span x-text='Intl.DateTimeFormat().resolvedOptions().timeZone'></span>");

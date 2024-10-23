@@ -3,9 +3,9 @@ Contributors: apexws, spellhammer
 Tags: events, calendar, event
 Donate link: https://piecalendar.com
 Requires at least: 5.9
-Tested up to: 6.6.1
+Tested up to: 6.6.2
 Requires PHP: 7.4
-Stable tag: 1.2.3
+Stable tag: 1.2.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -91,6 +91,14 @@ Feel free to read our documentation for more detailed info: [docs.piecalendar.co
 3. Back-end controls of Pie Calendar on a single post
 
 == Changelog ==
+
+= 1.2.4 =
+* Fix: Corrected issue that caused events on sites with UTC+0 timezone to not show up on calendar sometimes.
+* Fix: Cleaned up and improved piecal-info display logic.
+* Fix: Corrected issue where events were showing at 12:00 when using ACF start/end fields
+* Tweak: Added more calendar JS hooks.
+* Tweak: Added super-minimal onboarding admin notice wth some basic instructions.
+* Tweak: Added translation functions for classic metabox strings.
 
 = 1.2.3 =
 * New: Add custom field data and images to popover.

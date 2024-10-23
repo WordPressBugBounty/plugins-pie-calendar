@@ -83,7 +83,7 @@ class Time {
         }
 
         // Early return for if the gmt_offset option is missing.
-        if( $gmt_offset == '+00:00' ) {
+        if( $gmt_offset === '+00:00' ) {
             return $gmt_offset;
         }
 
@@ -107,5 +107,43 @@ class Time {
         $gmt_final_offset = sprintf('%s%02d:%02d', $gmt_offset_plus_or_minus, $gmt_offset_number_only, $gmt_offset_decimal_as_minutes);
 
         return $gmt_final_offset;
+    }
+
+    // Helper function to get start date from pass-through (URL) or meta key depending on what's available.
+    public static function getStartDate() {
+        $timezoneObj = new DateTimeZone( $_GET['timezone'] ?? wp_timezone_string() );
+        $startDate = null;
+
+        if ( isset( $_GET['eventstart'] ) && is_numeric( $_GET['eventstart'] ) && $timezoneObj ) {
+            $startDate = sanitize_text_field( $_GET['eventstart'] );
+            
+            if ( $date = new DateTime( '@' . $startDate ) ) {
+                $date->setTimezone( $timezoneObj );
+                $startDate     = $date->format( "Y-m-d H:i:s" );
+            }
+        } else {
+            $startDate = get_post_meta(get_the_ID(), apply_filters( 'piecal_start_date_meta_key', '_piecal_start_date' ), true );
+        }
+
+        return $startDate;
+    }
+
+    // Helper function to get end date from pass-through (URL) or meta key depending on what's available.
+    public static function getEndDate() {
+        $timezoneObj = new DateTimeZone( $_GET['timezone'] ?? wp_timezone_string() );
+        $endDate = null;
+
+        if ( isset( $_GET['eventend'] ) && is_numeric( $_GET['eventend'] ) && $_GET['eventend'] != 0 && $timezoneObj ) {
+            $endDate = sanitize_text_field( $_GET['eventend'] );
+            
+            if ( $date = new DateTime( '@' . $endDate ) ) {
+                $date->setTimezone( $timezoneObj );
+                $endDate       = $date->format( "Y-m-d H:i:s" );
+            }
+        } else {
+            $endDate = get_post_meta(get_the_ID(), apply_filters( 'piecal_end_date_meta_key', '_piecal_end_date' ), true );
+        }
+
+        return $endDate;
     }
 }

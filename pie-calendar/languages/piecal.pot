@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-09-02T20:40:38+00:00\n"
+"POT-Creation-Date: 2024-10-23T17:33:46+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.8.1\n"
 "X-Domain: piecal\n"
@@ -34,144 +34,190 @@ msgstr ""
 msgid "https://piecalendar.com/about"
 msgstr ""
 
-#: includes/metabox.php:32
+#. Translators: Label for Pie Calendar classic metabox.
+#: includes/metabox.php:28
 #: build/index.js:1
 #: src/piecal-postmeta-fields.js:15
 msgid "Calendar"
 msgstr ""
 
+#. Translators: Label for post type toggle in Pie Calendar classic metabox.
+#: includes/metabox.php:83
+msgid "Post Is Event"
+msgstr ""
+
+#. Translators: Label for all day event toggle in Pie Calendar classic metabox.
+#: includes/metabox.php:90
+#: build/index.js:1
+#: src/piecal-postmeta-fields.js:27
+msgid "All Day Event"
+msgstr ""
+
+#. Translators: Label for start date in Pie Calendar classic metabox.
+#: includes/metabox.php:97
+#: build/index.js:1
+#: src/piecal-postmeta-fields.js:49
+#: src/piecal-postmeta-fields.js:53
+#: src/piecal-postmeta-fields.js:63
+msgid "Start Date"
+msgstr ""
+
+#. Translators: Label for end date in Pie Calendar classic metabox.
+#: includes/metabox.php:104
+#: build/index.js:1
+#: src/piecal-postmeta-fields.js:93
+#: src/piecal-postmeta-fields.js:97
+#: src/piecal-postmeta-fields.js:107
+msgid "End Date"
+msgstr ""
+
 #. Translators: This string is used to separate the date and time in the default format output by the piecal-info shortcode. Each letter must be escaped by a backslash.
-#: includes/piecal-info-shortcode.php:24
+#: includes/piecal-info-shortcode.php:30
 msgid " \\a\\t "
 msgstr ""
 
 #. Translators: This string is for displaying the time zone via the Pie Calendar Info shortcode
-#: includes/piecal-info-shortcode.php:28
+#: includes/piecal-info-shortcode.php:34
 msgid "Events are listed in the following time zone: "
 msgstr ""
 
 #. Translators: This string is for displaying the viewer's time zone via the Pie Calendar Info shortcode
-#. Translators: Pie Calendar footer text.
-#: includes/piecal-info-shortcode.php:31
-#: includes/shortcode.php:608
+#: includes/piecal-info-shortcode.php:37
+#: includes/shortcode.php:620
 msgid "Event times are listed in your local time zone: "
 msgstr ""
 
 #. Translators: The 'Starts on' prepend text for the piecal-info shortcode
-#: includes/piecal-info-shortcode.php:68
+#: includes/piecal-info-shortcode.php:54
 msgid "Starts on"
 msgstr ""
 
 #. Translators: This string is used for the start date/time output by the piecal-info shortcode. %1$s is the 'Starts on' prepend. %2$s is the start date & time.
-#: includes/piecal-info-shortcode.php:71
-#: includes/piecal-info-shortcode.php:72
+#: includes/piecal-info-shortcode.php:57
+#: includes/piecal-info-shortcode.php:58
 msgid "%1$s %2$s."
 msgstr ""
 
 #. Translators: The 'Ends on' prepend text for the piecal-info shortcode.
-#: includes/piecal-info-shortcode.php:75
+#: includes/piecal-info-shortcode.php:61
 msgid "Ends on"
 msgstr ""
 
 #. Translators: This string is used for the end date/time output by the piecal-info shortcode. Placeholder is the end date & time.
-#: includes/piecal-info-shortcode.php:78
-#: includes/piecal-info-shortcode.php:79
+#: includes/piecal-info-shortcode.php:64
+#: includes/piecal-info-shortcode.php:65
 msgid " %1$s %2$s."
 msgstr ""
 
 #. Translators: This string is output at the end of the start/end date/time output by the piecal-info shortcode if the event is marked as all day.
-#: includes/piecal-info-shortcode.php:82
+#: includes/piecal-info-shortcode.php:68
 msgid " Lasts all day."
 msgstr ""
 
-#: includes/shortcode.php:287
+#: includes/shortcode.php:291
 msgid "'All-day event'"
 msgstr ""
 
-#: includes/shortcode.php:302
+#: includes/shortcode.php:306
 msgid "'to'"
 msgstr ""
 
-#: includes/shortcode.php:305
+#: includes/shortcode.php:309
 msgid "'Multi-day event running from'"
 msgstr ""
 
-#: includes/shortcode.php:308
+#: includes/shortcode.php:312
 msgid "'Multi-day, all-day event running from'"
 msgstr ""
 
-#: includes/shortcode.php:456
+#: includes/shortcode.php:468
 msgid "Skip Calendar"
 msgstr ""
 
-#: includes/shortcode.php:468
+#: includes/shortcode.php:480
 msgid "Back to full month view."
 msgstr ""
 
-#: includes/shortcode.php:470
+#: includes/shortcode.php:482
 msgid "Back To Full Month"
 msgstr ""
 
 #. Translators: Label for calendar view chooser.
-#: includes/shortcode.php:475
+#: includes/shortcode.php:487
 msgid "Choose View"
 msgstr ""
 
 #. Translators: String for Month - Classic view in view picker dropdown.
-#: includes/shortcode.php:481
+#: includes/shortcode.php:493
 msgid "Month - Classic"
 msgstr ""
 
 #. Translators: String for Month - List view in view picker dropdown.
-#: includes/shortcode.php:487
+#: includes/shortcode.php:499
 msgid "Month - List"
 msgstr ""
 
 #. Translators: String for Week - Time Grid view in view picker dropdown.
-#: includes/shortcode.php:493
+#: includes/shortcode.php:505
 msgid "Week - Time Grid"
 msgstr ""
 
 #. Translators: String for Week - List view in view picker dropdown.
-#: includes/shortcode.php:499
+#: includes/shortcode.php:511
 msgid "Week - List"
 msgstr ""
 
 #. Translators: String for Week - Classic view in view picker dropdown.
-#: includes/shortcode.php:505
+#: includes/shortcode.php:517
 msgid "Week - Classic"
 msgstr ""
 
 #. Translators: String for Day - Classic view in view picker dropdown.
-#: includes/shortcode.php:511
+#: includes/shortcode.php:523
 msgid "Day"
 msgstr ""
 
 #. Translators: Label for close button in Pie Calendar popover.
-#: includes/shortcode.php:548
+#: includes/shortcode.php:560
 msgid "Close event details"
 msgstr ""
 
 #. Translators: Label for event start date in Pie Calendar popover.
-#: includes/shortcode.php:561
+#: includes/shortcode.php:573
 msgid "Starts"
 msgstr ""
 
 #. Translators: Label for event end date in Pie Calendar popover.
-#: includes/shortcode.php:570
+#: includes/shortcode.php:582
 msgid "Ends"
 msgstr ""
 
 #. Translators: Label for "View <Post Type>" in Pie Calendar popover.
-#: includes/shortcode.php:589
+#: includes/shortcode.php:601
 msgid "View "
 msgstr ""
 
-#: plugin.php:135
+#: plugin.php:115
+msgid ""
+"<p>Pie Calendar has been activated.</p> \n"
+"\t\t\t\t<details>\n"
+"\t\t\t\t\t<summary>Quick Start Guide</summary>\n"
+"\t\t\t\t\t<ul>\n"
+"\t\t\t\t\t\t<li><strong>Step 1:</strong> Edit any post, page, or custom post type and enable the <strong>Show on Calendar</strong> toggle.</li>\n"
+"\t\t\t\t\t\t<li><strong>Step 2:</strong> Set a start date and time.</li>\n"
+"\t\t\t\t\t\t<li><strong>Step 3:</strong> Add the <code>[piecal]</code> shortcode wherever you want to display your calendar.</li>\n"
+"\t\t\t\t\t</ul>\n"
+"\t\t\t\t\t<p>That's it! Check out <a href='https://www.youtube.com/watch?v=ncdab1v_B1M'>this video</a> to learn how get started in <strong>under 4 minutes.</strong></p>\n"
+"\t\t\t\t\t<p>Or <a href='https://docs.piecalendar.com/'>click here</a> to view our extensive documentation.</p>\n"
+"\t\t\t\t</details>\n"
+"\t\t\t\t<p><a href='?piecal-dismiss-notice=true'>Dismiss this notice.</a></p>"
+msgstr ""
+
+#: plugin.php:167
 msgid "Navigate to the Pie Calendar website to purchase the Pro version."
 msgstr ""
 
-#: plugin.php:136
+#: plugin.php:168
 msgid "Upgrade to Pro"
 msgstr ""
 
@@ -181,28 +227,9 @@ msgid "Show On Calendar"
 msgstr ""
 
 #: build/index.js:1
-#: src/piecal-postmeta-fields.js:27
-msgid "All Day Event"
-msgstr ""
-
-#: build/index.js:1
-#: src/piecal-postmeta-fields.js:49
-#: src/piecal-postmeta-fields.js:53
-#: src/piecal-postmeta-fields.js:63
-msgid "Start Date"
-msgstr ""
-
-#: build/index.js:1
 #: src/piecal-postmeta-fields.js:74
 #: src/piecal-postmeta-fields.js:118
 msgid "Clear"
-msgstr ""
-
-#: build/index.js:1
-#: src/piecal-postmeta-fields.js:93
-#: src/piecal-postmeta-fields.js:97
-#: src/piecal-postmeta-fields.js:107
-msgid "End Date"
 msgstr ""
 
 #: build/index.js:1
