@@ -1,18 +1,38 @@
 <?php
 
+include_once( PIECAL_DIR . '/includes/utils/Scripts.php' );
+
 add_shortcode("piecal", "piecal_render_calendar");
 
 if ( ! function_exists( 'piecal_render_calendar' ) ) {
 
     function piecal_render_calendar( $atts ) {
+        do_action( 'piecal_render_calendar', $atts );
+
+        Piecal\Utils\Scripts::loadCoreScriptsAndStyles();
 
         $atts = apply_filters('piecal_shortcode_atts', $atts);
+
+        $theme = $atts['theme'] ?? false;
+
+		if( $theme && $theme == 'dark' )
+			Piecal\Utils\Scripts::enqueueBundle( ['piecalThemeDarkCSS'] );
+
+		if( $theme && $theme == 'adaptive' )
+			Piecal\Utils\Scripts::enqueueBundle( ['piecalThemeDarkCSSAdaptive'] );
+
+		// Conditional loading of locales
+		$locale = $atts['locale'] ?? get_bloginfo('language');
+
+		if( $locale != 'en-US' )
+			Piecal\Utils\Scripts::enqueueBundle( ['fullcalendar-locales'] );
         
         $args = [
             'post_type'     => $atts['type'] ?? 'any',
             'post_status'   => 'publish',
             'posts_per_page' => -1,
             'no_found_rows' => true,
+            'ignore_sticky_posts' => true,
             'meta_query'     => [
                 'relation' => 'AND',
                 [
@@ -116,30 +136,11 @@ if ( ! function_exists( 'piecal_render_calendar' ) ) {
             $initialView = 'dayGridMonth';
         }
 
-    wp_enqueue_style('piecalCSS');
-
-    $theme = $atts['theme'] ?? false;
-
-    if( $theme && $theme == 'dark' )
-        wp_enqueue_style('piecalThemeDarkCSS');
-
-    if( $theme && $theme == 'adaptive' )
-        wp_enqueue_style('piecalThemeDarkCSSAdaptive');
-
     do_action('piecal_before_core_frontend_scripts');
-
-    wp_enqueue_script('alpinefocus');
-    wp_enqueue_script('alpinejs');
-    wp_enqueue_script('fullcalendar');
-    wp_enqueue_script('piecal-utils');
 
     do_action('piecal_after_core_frontend_scripts');
 
     $locale = $atts['locale'] ?? get_bloginfo('language');
-
-    if( $locale != 'en-US' ) {
-        wp_enqueue_script('fullcalendar-locales');
-    }
 
     $localeDateStringFormat = [
         'hour' => '2-digit',
@@ -255,8 +256,9 @@ if ( ! function_exists( 'piecal_render_calendar' ) ) {
                     dateClick: function( info ) {
                         if( info.jsEvent.target.tagName != 'A' ) return;
 
-                        piecalChangeView('listDay');
                         this.gotoDate(info.dateStr);
+                        piecalChangeView('listDay');
+                        
 
                         <?php do_action( 'piecal_additional_date_click_js' ); ?>
                     },
@@ -339,8 +341,8 @@ if ( ! function_exists( 'piecal_render_calendar' ) ) {
                         dayLink.addEventListener('keydown', (event) => {
                             if( event.key == "Enter" || event.key == ' ' ) {
                                 event.preventDefault();
-                                piecalChangeView('listDay');
                                 window.calendar.gotoDate(info.date);
+                                piecalChangeView('listDay');
 
                                 setTimeout( () => {
                                     let focusTarget = document.querySelector('.fc-list-day-text');

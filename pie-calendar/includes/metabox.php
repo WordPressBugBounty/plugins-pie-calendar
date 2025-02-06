@@ -3,37 +3,17 @@
 if ( ! function_exists( 'piecal_classic_metabox' ) ) {
     function piecal_classic_metabox( $post_type ) {
 
-        // Explicit allowed post types - if any are defined, only those in the list show Calendar settings
-        $explicitAllowedPostTypes = apply_filters( 'piecal_explicit_allowed_post_types', [] );
-
-        // Don't add meta box to unsupported post types
-        $unsupported_post_types = [];
-
-        if( is_plugin_active( 'easy-digital-downloads/easy-digital-downloads.php' ) )
-            $unsupported_post_types = [...$unsupported_post_types, 'download'];
-
-        if( is_plugin_active( 'woocommerce/woocommerce.php' ) )
-            $unsupported_post_types = [...$unsupported_post_types, 'product'];
-        // End unsupported post types designation
-
-        // Check explicitAllowList. If it contains any post types, but not this post type, add this post type
-        // to the $unsupported_post_types list
-        if( count( $explicitAllowedPostTypes ) > 0 && !in_array( $post_type, $explicitAllowedPostTypes ) ) {
-            $unsupported_post_types = [...$unsupported_post_types, $post_type];   
-        }
-
-        $usesGutenberg = use_block_editor_for_post_type( $post_type );
+        include_once( PIECAL_DIR . '/includes/utils/General.php' );
 
         // Translators: Label for Pie Calendar classic metabox.
         $classicMetaboxLabel = __( 'Calendar', 'piecal' );
 
-        if( ( $usesGutenberg != 1 || 
-            is_plugin_active('classic-editor/classic-editor.php') ) && 
-            !in_array( $post_type, $unsupported_post_types ) ) {
+        if( Piecal\Utils\General::shouldAddMetabox( $post_type ) ) {
             add_meta_box(
                 'piecalendar-metabox',
                 $classicMetaboxLabel,
-                'piecal_classic_metabox_callback'
+                'piecal_classic_metabox_callback',
+                $post_type
             );
         }
     }

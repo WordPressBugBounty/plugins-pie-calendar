@@ -77,4 +77,55 @@ Class General {
 
         return count(array_intersect($needleArray, $haystackArray)) > 0;
     }
+
+    public static function shouldAddMetabox( $post_type ) {
+        $unsupported_post_types = [];
+
+        $explicitAllowedPostTypes = apply_filters( 'piecal_explicit_allowed_post_types', [] );
+
+        if( is_plugin_active( 'easy-digital-downloads/easy-digital-downloads.php' ) )
+            $unsupported_post_types = [...$unsupported_post_types, 'download'];
+
+        if( is_plugin_active( 'woocommerce/woocommerce.php' ) )
+            $unsupported_post_types = [...$unsupported_post_types, 'product'];
+
+        if( is_plugin_active( 'easy-digital-downloads-pro/easy-digital-downloads.php' ) )
+            $unsupported_post_types = [...$unsupported_post_types, 'download'];
+
+        if( is_plugin_active( 'surecart/surecart.php' ) )
+            $unsupported_post_types = [...$unsupported_post_types, 'sc_product'];
+
+        $unsupported_post_types = apply_filters( 'piecal_unsupported_post_types', $unsupported_post_types );
+
+        // Add this post type to the unsupported post types list if it's not in the explicit allowed post types list and at least one post type has been explicitly allowed
+        if( count( $explicitAllowedPostTypes ) > 0 && !in_array( $post_type, $explicitAllowedPostTypes ) ) {
+            $unsupported_post_types = [...$unsupported_post_types, $post_type];   
+        }
+
+        if( in_array( $post_type, $unsupported_post_types ) ) {
+            return false;
+        }
+
+        if( use_block_editor_for_post_type( $post_type ) ) {
+            return false;
+        }
+
+        if( is_plugin_active( 'woocommerce/woocommerce.php' ) && $post_type == 'product' ) {
+            return !in_array( $post_type, $unsupported_post_types );
+        }
+
+        if( is_plugin_active( 'easy-digital-downloads/easy-digital-downloads.php' ) && $post_type == 'download' ) {
+            return !in_array( $post_type, $unsupported_post_types );
+        }
+
+        if( is_plugin_active( 'easy-digital-downloads-pro/easy-digital-downloads.php' ) && $post_type == 'download' ) {
+            return !in_array( $post_type, $unsupported_post_types );
+        }
+
+        if( ( is_plugin_active( 'surecart/surecart.php' ) && $post_type == 'sc_product' ) ) {
+            return !in_array( $post_type, $unsupported_post_types );
+        }
+
+        return true;
+    }
 }

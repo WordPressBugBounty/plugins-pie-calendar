@@ -3,9 +3,9 @@ Contributors: apexws, spellhammer
 Tags: events, calendar, event
 Donate link: https://piecalendar.com
 Requires at least: 5.9
-Tested up to: 6.6.2
+Tested up to: 6.7.1
 Requires PHP: 7.4
-Stable tag: 1.2.4
+Stable tag: 1.2.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -91,6 +91,13 @@ Feel free to read our documentation for more detailed info: [docs.piecalendar.co
 3. Back-end controls of Pie Calendar on a single post
 
 == Changelog ==
+
+= 1.2.5 =
+* Fix: Corrected issue causing sticky posts to show up on calendar even when not designated as events.
+* Fix: Fixed incorrect date in single day view when using widget mode.
+* Fix: Increased z-index of popover.
+* Tweak: Refactored logic responsible for displaying classic Pie Calendar metaboxes.
+* Tweak: Refactored the way scripts and styles are loaded to prevent undefined variable errors on some sites.
 
 = 1.2.4 =
 * Fix: Corrected issue that caused events on sites with UTC+0 timezone to not show up on calendar sometimes.

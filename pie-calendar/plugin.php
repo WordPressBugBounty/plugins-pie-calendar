@@ -9,7 +9,7 @@
  * Plugin Name:       Pie Calendar
  * Plugin URI:        https://piecalendar.com
  * Description:       Turn any post type into a calendar event and display it on a calendar.
- * Version:           1.2.4
+ * Version:           1.2.5
  * Author:            Elijah Mills & Jonathan Jernigan
  * Author URI:        https://piecalendar.com/about
  * License:           GPL-2.0+
@@ -25,12 +25,13 @@ if ( ! defined( 'WPINC' ) ) {
     die;
 }
 
-define( 'PIECAL_VERSION', '1.2.4' );
+define( 'PIECAL_VERSION', '1.2.5' );
 define( 'PIECAL_PATH', plugin_dir_url( __FILE__ ) );
 define( 'PIECAL_DIR', plugin_dir_path( __FILE__ ) );
 
 // Includes
 include_once( PIECAL_DIR . 'includes/metabox.php' );
+include_once( PIECAL_DIR . '/includes/utils/Scripts.php' );
 
 // File for registering & rendering shortcode.
 include_once( PIECAL_DIR . '/includes/shortcode.php' );
@@ -38,21 +39,26 @@ include_once( PIECAL_DIR . '/includes/piecal-info-shortcode.php' );
 
 // Register scripts & styles
 function piecal_register_scripts_and_styles() {
-	wp_register_script( 'alpinejs', PIECAL_PATH . 'vendor/alpine.3.11.1.js', ['alpinefocus'] );
-	wp_register_script( 'alpinefocus', PIECAL_PATH . 'vendor/alpine.focus.3.11.1.js' );
-	wp_register_script( 'fullcalendar', PIECAL_PATH . 'vendor/fullcalendar.6.1.4.js' );
-	wp_register_script( 'fullcalendar-locales', PIECAL_PATH . 'vendor/fullcalendar.locales-all.global.min.js' );
-	wp_register_script( 'piecal-utils', PIECAL_PATH . 'includes/js/piecal-utils.js', array(), PIECAL_VERSION );
-	wp_register_style( 'piecalCSS', PIECAL_PATH . 'css/piecal.css', array(), PIECAL_VERSION );
-	wp_register_style( 'piecalThemeDarkCSS', PIECAL_PATH . 'css/piecal-theme-dark.css', array(), PIECAL_VERSION );
-	wp_register_style( 'piecalThemeDarkCSSAdaptive', PIECAL_PATH . 'css/piecal-theme-dark-adaptive.css', array(), PIECAL_VERSION );
+
+	$bundle = [
+		'alpinejs',
+		'alpinefocus',
+		'fullcalendar',
+		'fullcalendar-locales',
+		'piecal-utils',
+		'piecalCSS',
+		'piecalThemeDarkCSS',
+		'piecalThemeDarkCSSAdaptive'
+	];
+
+	Piecal\Utils\Scripts::registerAndLocalizeBundle( $bundle );
 }
 add_action('wp_enqueue_scripts', 'piecal_register_scripts_and_styles');
 
 // Defer Alpine script
 add_filter( 'script_loader_tag', function ( $tag, $handle ) {
 
-    if ( !in_array($handle, ['alpinejs', 'alpinefocus']) )
+    if ( !in_array($handle, ['alpinejs', 'alpinefocus', 'fullcalendar-locales']) )
         return $tag;
 
     return str_replace( ' src', ' defer="defer" src', $tag );
@@ -250,15 +256,4 @@ function piecal_site_gmt_offset( $offset = null ) {
 	$gmt_final_offset = sprintf('%s%02d:%02d', $gmt_offset_plus_or_minus, $gmt_offset_number_only, $gmt_offset_decimal_as_minutes);
 
 	return $gmt_final_offset;
-}
-
-// Add PHP info to JS variables for use on front-end
-add_action( 'piecal_after_core_frontend_scripts', 'piecal_add_php_vars_to_js' );
-
-function piecal_add_php_vars_to_js() { 
-    $useAdaptiveTimezones = apply_filters('piecal_use_adaptive_timezones', false);
-
-    wp_localize_script( 'piecal-utils', 'piecalVars', [
-        'useAdaptiveTimezones' => $useAdaptiveTimezones
-    ] );
 }
