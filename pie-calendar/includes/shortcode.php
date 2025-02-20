@@ -193,7 +193,7 @@ if ( ! function_exists( 'piecal_render_calendar' ) ) {
                     events: <?php echo json_encode($eventsArray); ?>,
                     direction: "<?php echo is_rtl() ? 'rtl' : 'ltr'; ?>",
                     contentHeight: "auto",
-                    locale: "<?php echo $locale; ?>",
+                    locale: "<?php echo esc_attr( $locale ); ?>",
                     eventTimeFormat: <?php echo json_encode($localeDateStringFormat); ?>,
                     dayHeaderFormat: { weekday: 'long' },
                     eventClick: function( info ) {
@@ -427,7 +427,7 @@ if ( ! function_exists( 'piecal_render_calendar' ) ) {
                     viewSpec: "Loading",
                     buttonText: {},
                     showPopover: false,
-                    locale: "<?php echo $locale; ?>",
+                    locale: "<?php echo esc_attr( $locale ); ?>",
                     localeDateStringFormat: <?php echo json_encode( $localeDateStringFormat ); ?>,
                     allDayLocaleDateStringFormat: <?php echo json_encode( $allDayLocaleDateStringFormat ); ?>,
                     calendarView: "<?php echo esc_attr( $initialView ); ?>",

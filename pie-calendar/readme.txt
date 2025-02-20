@@ -3,9 +3,9 @@ Contributors: apexws, spellhammer
 Tags: events, calendar, event
 Donate link: https://piecalendar.com
 Requires at least: 5.9
-Tested up to: 6.7.1
+Tested up to: 6.7.2
 Requires PHP: 7.4
-Stable tag: 1.2.5
+Stable tag: 1.2.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -91,6 +91,9 @@ Feel free to read our documentation for more detailed info: [docs.piecalendar.co
 3. Back-end controls of Pie Calendar on a single post
 
 == Changelog ==
+
+= 1.2.6 =
+* Security Fix: Prevented execution of JavaScript in the locale attribute of the [piecal] shortcode.
 
 = 1.2.5 =
 * Fix: Corrected issue causing sticky posts to show up on calendar even when not designated as events.
