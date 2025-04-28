@@ -54,15 +54,15 @@ function render_piecal_info( $atts ) {
     $start_prepend = apply_filters( 'piecal_info_start_prepend', __("Starts on", 'piecal') );
 
     /* Translators: This string is used for the start date/time output by the piecal-info shortcode. %1$s is the 'Starts on' prepend. %2$s is the start date & time. */
-    $info_string_start = sprintf( esc_html__( '%1$s %2$s.', 'piecal' ), $start_prepend, $start );
-    $info_string_start_date_only = sprintf( esc_html__( '%1$s %2$s.', 'piecal' ), $start_prepend, $start_date_only );
+    $info_string_start = sprintf( esc_html__( '%1$s %2$s', 'piecal' ), $start_prepend, $start );
+    $info_string_start_date_only = sprintf( esc_html__( '%1$s %2$s', 'piecal' ), $start_prepend, $start_date_only );
 
     /* Translators: The 'Ends on' prepend text for the piecal-info shortcode. */
     $end_prepend = apply_filters( 'piecal_info_end_prepend', __( "Ends on", 'piecal' ) );
 
     /* Translators: This string is used for the end date/time output by the piecal-info shortcode. Placeholder is the end date & time. */
-    $info_string_end = sprintf( esc_html__( ' %1$s %2$s.', 'piecal' ), $end_prepend, $end );
-    $info_string_end_date_only = sprintf( esc_html__( ' %1$s %2$s.', 'piecal' ), $end_prepend, $end_date_only );
+    $info_string_end = sprintf( esc_html__( ' %1$s %2$s', 'piecal' ), $end_prepend, $end );
+    $info_string_end_date_only = sprintf( esc_html__( ' %1$s %2$s', 'piecal' ), $end_prepend, $end_date_only );
 
     /* Translators: This string is output at the end of the start/end date/time output by the piecal-info shortcode if the event is marked as all day. */
     $info_string_allday = apply_filters( 'piecal_info_lasts_all_day', __( ' Lasts all day.', 'piecal' ) );
@@ -74,13 +74,13 @@ function render_piecal_info( $atts ) {
             <?php do_action( 'piecal_info_scripts' ); ?>
         </script>
         <?php
-        // Start date only
+        // Start date
         if( $start && Piecal\Utils\General::foundInArray( ['start', 'all'], $atts['fragments'] ?? [] ) ) {
-            if( empty( $allday ) ) {
-                echo "<p class='piecal-info__start'>" . $info_string_start . "</p>";
-            } else {
-                echo "<p class='piecal-info__start'>" . $info_string_start_date_only . "</p>";
-            }
+          if( empty( $allday ) ) {
+              echo "<p class='piecal-info__start'>" . $info_string_start . "</p>";
+          } else {
+              echo "<p class='piecal-info__start'>" . $info_string_start_date_only . "</p>";
+          }
         }
 
         // End date

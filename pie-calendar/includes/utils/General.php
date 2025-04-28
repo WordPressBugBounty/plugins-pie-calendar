@@ -106,7 +106,8 @@ Class General {
             return false;
         }
 
-        if( use_block_editor_for_post_type( $post_type ) ) {
+        // Check if block editor is actually loaded by looking for its core assets
+        if (wp_script_is('wp-block-editor') || wp_script_is('wp-blocks')) {
             return false;
         }
 

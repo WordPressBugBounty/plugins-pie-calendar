@@ -20,5 +20,13 @@
   "homepage": "https://github.com/Spellhammer/piecalendar#readme",
   "devDependencies": {
     "@wordpress/scripts": "25.1.0"
+  },
+  "dependencies": {
+    "@fullcalendar/core": "^6.1.11",
+    "@fullcalendar/daygrid": "^6.1.11",
+    "@fullcalendar/list": "^6.1.11",
+    "@fullcalendar/react": "^6.1.11",
+    "@fullcalendar/timegrid": "^6.1.11",
+    "@wordpress/i18n": "^5.22.0"
   }
 }

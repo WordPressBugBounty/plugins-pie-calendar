@@ -59,10 +59,10 @@ const Piecal_Gutenberg_Sidebar_Plugin = ( { postType, postMeta, setPostMeta } ) 
 						<div>
 							<DateTimePicker
 								currentDate={ postMeta._piecal_start_date }
-								is12Hour={ true }
 								label={ __( 'Start Date', 'piecal' ) }
 								value={ postMeta._piecal_start_date }
 								onChange={ ( value ) => setPostMeta( { _piecal_start_date: value } ) }
+								is12Hour={ wp.date.getSettings().formats.time.toLowerCase().indexOf( 'a' ) !== -1 }
 							/>
 							<PanelRow>
 								<Button
@@ -103,10 +103,10 @@ const Piecal_Gutenberg_Sidebar_Plugin = ( { postType, postMeta, setPostMeta } ) 
 						<div>
 							<DateTimePicker
 								currentDate={ postMeta._piecal_end_date }
-								is12Hour={ true }
 								label={ __( 'End Date', 'piecal' ) }
 								value={ postMeta._piecal_end_date }
 								onChange={ ( value ) => setPostMeta( { _piecal_end_date: value } ) }
+								is12Hour={ wp.date.getSettings().formats.time.toLowerCase().indexOf( 'a' ) !== -1 }
 							/>
 							<PanelRow>
 								<Button

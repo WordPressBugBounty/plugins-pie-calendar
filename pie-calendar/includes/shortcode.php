@@ -1,34 +1,45 @@
 <?php
 
-include_once( PIECAL_DIR . '/includes/utils/Scripts.php' );
+require_once PIECAL_DIR . '/includes/utils/Scripts.php';
 
-add_shortcode("piecal", "piecal_render_calendar");
+add_shortcode( 'piecal', 'piecal_render_calendar' );
 
 if ( ! function_exists( 'piecal_render_calendar' ) ) {
 
-    function piecal_render_calendar( $atts ) {
-        do_action( 'piecal_render_calendar', $atts );
+	function piecal_render_calendar( $atts ) {
+		do_action( 'piecal_render_calendar', $atts );
 
-        Piecal\Utils\Scripts::loadCoreScriptsAndStyles();
+		Piecal\Utils\Scripts::loadCoreScriptsAndStyles();
 
-        $atts = apply_filters('piecal_shortcode_atts', $atts);
+		$atts = apply_filters( 'piecal_shortcode_atts', $atts );
 
-        $theme = $atts['theme'] ?? false;
+		$theme = $atts['theme'] ?? false;
 
-		if( $theme && $theme == 'dark' )
-			Piecal\Utils\Scripts::enqueueBundle( ['piecalThemeDarkCSS'] );
+		if ( $theme && $theme == 'dark' ) {
+			Piecal\Utils\Scripts::enqueueBundle( array( 'piecalThemeDarkCSS' ) );
+		}
 
-		if( $theme && $theme == 'adaptive' )
-			Piecal\Utils\Scripts::enqueueBundle( ['piecalThemeDarkCSSAdaptive'] );
+		if ( $theme && $theme == 'adaptive' ) {
+			Piecal\Utils\Scripts::enqueueBundle( array( 'piecalThemeDarkCSSAdaptive' ) );
+		}
 
 		// Conditional loading of locales
 		$locale = $atts['locale'] ?? get_bloginfo('language');
 
 		if( $locale != 'en-US' )
 			Piecal\Utils\Scripts::enqueueBundle( ['fullcalendar-locales'] );
+
+        // Support multiple post types
+        $types = 'any';
+    
+        if (isset($atts['type'])) {
+            $types = is_array($atts['type']) ? $atts['type'] : explode(',', $atts['type']);
+            $types = array_map('trim', $types);
+            $atts['type'] = $types;
+        }
         
         $args = [
-            'post_type'     => $atts['type'] ?? 'any',
+            'post_type'     => $types,
             'post_status'   => 'publish',
             'posts_per_page' => -1,
             'no_found_rows' => true,
@@ -160,8 +171,13 @@ if ( ! function_exists( 'piecal_render_calendar' ) ) {
         $wrapperClass .= ' piecal-wrap-event-titles';
     }
 
+    if( isset( $atts['theme'] ) ) {
+        $wrapperClass .= ' piecal-theme-' . $atts['theme'];
+    }
+
     if( isset( $atts['widget'] ) && $atts['widget'] == 'true' ) {
         $wrapperClass .= ' piecal-wrapper--widget';
+        $initialView = 'dayGridMonth';
     }
 
     if( isset( $atts['widget'] ) && $atts['widget'] == 'responsive' ) {
@@ -621,7 +637,7 @@ if ( ! function_exists( 'piecal_render_calendar' ) ) {
                 /* Translators: This string is for displaying the viewer's time zone via the Pie Calendar Info shortcode */
                 $footer_text = __( 'Event times are listed in your local time zone: ', 'piecal' );
 
-                echo apply_filters('piecal-footer', $footer_text . "<span x-text='Intl.DateTimeFormat().resolvedOptions().timeZone'></span>");
+                echo apply_filters('piecal-footer', $footer_text . "<span x-data x-text='Intl.DateTimeFormat().resolvedOptions().timeZone'></span>");
             }
             ?>
         </div>
@@ -632,7 +648,7 @@ if ( ! function_exists( 'piecal_render_calendar' ) ) {
 }
 
 if ( ! function_exists( 'piecal_replace_read_more' ) ) {
-    function piecal_replace_read_more( $more ) {
-        return '...';
-    }
+	function piecal_replace_read_more( $more ) {
+		return '...';
+	}
 }

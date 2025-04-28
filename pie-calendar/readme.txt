@@ -3,9 +3,9 @@ Contributors: apexws, spellhammer
 Tags: events, calendar, event
 Donate link: https://piecalendar.com
 Requires at least: 5.9
-Tested up to: 6.7.2
+Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.2.6
+Stable tag: 1.2.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,7 +27,10 @@ Work directly in the WordPress Editor with existing posts and interfaces you’r
 
 There's no external editor or custom interface to learn. In a matter of minutes, you can turn any post into an event on your calendar.
 
-Unlike other event calendar plugins that overwhelm you with options and features you'll never need, Pie Calendar is intentionally stripped down. Our features let you create an event listing website that is as simple or as complex you need. 
+1. Install the plugin.
+2. Edit any page or post and in the sidebar (Gutenberg) or below your post content (Classic Editor / non-Gutenberg), enable the “Show on Calendar” toggle.
+3. Set a start date and time, optionally set an end date, and optionally enable the "all day" event if you’d like.
+4. Add the [piecal] shortcode anywhere you want your calendar to appear.
 
 == Features ==
 1. **Turn Any Post Into an Event:** Within minutes, convert any post on your site into an event that appears on your front-end calendar.
@@ -39,27 +42,23 @@ Unlike other event calendar plugins that overwhelm you with options and features
 7. **Color-Coded Events (Pro):** Give your events a unique color to make them stand out on the front-end or for enhanced organization.
 8. **WooCommerce & EDD Support (Pro):** Transform any WooCommerce product or EDD Download into an event to create custom booking and event ticketing systems.
 
-== Pro version ==
-Unleash the full power of Pie Calendar with the Pro version. 
+= More Info =
+Once you’ve installed the plugin, go to any post or page and enable the “Show on Calendar” toggle.
+Then, configure the options to your liking. Set a start date and time, optionally set an end date, and configure the all day event if you’d like.
 
-Gain access to exclusive features like recurring events, color-coded events, and integrations with WooCommerce and EDD to build your own custom booking and event ticketing systems.
+You can do this to as many or as few posts as you’d like. Any post type will be supported, so long as your custom post types have **supports: editor** and **supports: custom fields** turned on. For clarity on this, watch the video embedded above.
 
-Try with confidence thanks to our 30-day refund policy, and an unlimited site license. Learn more at [piecalendar.com](https://piecalendar.com/ "Pie Calendar Main Website")
+Then, add the [piecal] shortcode anywhere you want your calendar to appear.
 
-==WHY CHOOSE PIE CALENDAR?==
-1. **Easy to Use:** Pie Calendar is the easiest way to create and manage events in WordPress. All with no code and just a few clicks!
-2. **Ultimate Flexibility**: Unlike other event plugins that lock you into an entirely new Events section in the backend, Pie Calendar lets you build your events anyway you need, anywhere on your site. 
-3. **Lightweight**: Intentionally built to do more with less, Pie Calendar is a fresh take on event plugins, providing you with exactly what you need and no excess. 
+The shortcode accepts a few different parameters: 
 
-== Installation ==
-**Get Started Quickly and Easily**
-1. Install the plugin. (Get free or buy [Pie Calendar Pro](https://piecalendar.com/ "Pie Calendar Website"))
-2. Edit any page or post and in the sidebar (Gutenberg) or below your post content (Classic Editor / non-Gutenberg), enable the “Show on Calendar” toggle.
-3. Set a start date and time, optionally set an end date, and optionally enable the “all day” event if you’d like.
-4. Add the **[piecal]** shortcode anywhere you want your calendar to appear. 
+* **type="your-post-type"**
+Accepts a single value of any post type name to limit your calendar to only show that post type.
+* **view="dayGridMonth"** is the default view you want selected when the calendar loads. 
+The possible views are ‘dayGridMonth’, ‘listMonth’, ‘timeGridWeek’, ‘listWeek’, ‘dayGridWeek’. 
+* **locale="es"** - accepts any two letter ISO 639-1 language code 
 
-**Shortcode Parameters**
-Learn about the available shortcode parameters here: [docs.piecalendar.com](https://docs.piecalendar.com/article/5-shortcode-options "Pie Calendar Docs Website")
+The shortcode defaults to show all post types, dayGridMonth, and locale of en.
 
 == Frequently Asked Questions ==
 =Will this work with my theme?=
@@ -86,11 +85,14 @@ Yes, the calendar plugin pickups if your WordPress language is RTL via the is_rt
 Feel free to read our documentation for more detailed info: [docs.piecalendar.com](https://docs.piecalendar.com/ "Pie Calendar Docs Website") or open a support thread here on our plugin page. 
 
 == Screenshots ==
-1. Front-end interface of Pie Calendar, inheriting theme styles.
-2. Example of calendar in "Week - Classic" view.
-3. Back-end controls of Pie Calendar on a single post
+1. default
 
 == Changelog ==
+
+= 1.2.7 =
+* New: Added calendar blocks for the Block Editor
+* Fix: Metabox logic has been improved to accommodate post types that are available in REST but use classic editor
+* Fix: Datetime pickers should now adapt to the 12/24 hour time format used by the site
 
 = 1.2.6 =
 * Security Fix: Prevented execution of JavaScript in the locale attribute of the [piecal] shortcode.
@@ -138,7 +140,6 @@ Feel free to read our documentation for more detailed info: [docs.piecalendar.co
 * Fix: Corrected bug causing widget mode event indicator to display as a flat line on Safari (#284)
 * Fix: Corrected issue that caused all day, multi-day events to span the wrong number of days in some timezones (#319)
 
-
 = 1.2.1 =
 * A11y: Removed # from aria-labelledby attribute on td elements (#286)
 * Fix: Corrected issue that caused some events not to be output if the timezone was set to UTC (#282)
@@ -146,8 +147,6 @@ Feel free to read our documentation for more detailed info: [docs.piecalendar.co
 * Fix: Corrected some code dealing with the calendar footer output (#297)
 * Fix: Added $atts argument to piecal_calendar_object_properties filter (#291)
 * Fix: Corrected circle indicator style in widget mode when suing theme="dark" or adaptive dark mode (#273)
-
-
 
 = 1.2.0 =
 * New: Added new "widget" parameter for [piecal] shortcode, usage examples: [piecal widget=true] or [piecal widget=responsive]. Widget mode is an improved layout for the calendar grid on small devices or sidebars. Learn more at docs.piecalendar.com
@@ -163,6 +162,7 @@ Feel free to read our documentation for more detailed info: [docs.piecalendar.co
 * Tweak: [piecal-info] now outputs with .piecal-info class on the wrapper div, to make it easier to target with CSS
 * Fix: Corrected issue that caused invalid time error for all day events that have no end time
 * Fix: Corrected errors that occurred in the Block Editor when upgrading from Pie Calendar free to pro
+
 = 1.1.1 =
 * New: Remove prepend text in [piecal-info] shortcode. More info: https://docs.piecalendar.com/article/26-hide-prepend-text-from-piecal-info
 * New: Allow event titles to wrap inside the day cell. Configurable with a shortcode parameter: [piecal wraptitles='true']
@@ -171,11 +171,13 @@ Feel free to read our documentation for more detailed info: [docs.piecalendar.co
 * Update: Reverted minimum PHP version to 7.4. 
 * Fix: Added better logic to detect when certain post types use 'supports: editor' but not Gutenberg.
 * Fix: Adjusted utm parameters in Pro link on plugins page
+
 = 1.1 =
 * New: It is now possible to use custom meta fields as Pie Calendar's date and time source. Learn more in our developer docs.
 * Fix: Properly reset post data, which could cause issues with dynamic data element rendering properly. 
 * Fix: Front-end calendar now properly reflects the date format selected in WordPress settings.
 * Fix: Resolved an undefined array key issue related to custom meta fields. 
+
 = 1.0.3 =
 * New: Numerous new filters and hooks (see documentation for more info).
 * New: It is now possible to alter the date format in the event popover via hooks and filters. 
@@ -186,28 +188,20 @@ Feel free to read our documentation for more detailed info: [docs.piecalendar.co
 * Fix: Events query now returns all events, instead of relying on WordPress "posts to show at most" setting.
 * Fix: Events can no longer be dragged and dropped on front-end calendar.
 * Fix: Under the hood tweaks for bug fixes and compatibility.
+
 = 1.0.2 =
 * Better support for LocoTranslate
 * Better support for adapting to WordPress locale based on chosen language
 * Added additional shortcode attribute for dark mode: [piecal theme="dark"]
 * Added additional shortcode attribute for auto-dark mode support via prefers-color-scheme: [piecal theme="adaptive"]
 * Added new shortcode to display Pie Calendar times on a single post: [piecal-info]
+
 = 1.0.1 =
 * Added RTL support via is_rtl() function
 * Added support for locale in shortcode (sets first day and translate portions of calendar text)
 * Added Classic Editor support
 * Prevent background scroll on popover
 * Fixed scrollbar appearing inside calendar
+
 = 1.0 =
 * Initial release
-
-== Testimonials ==
-See what our satisfied users have to say about Pie Calendar:
-
-“Very easy to use, the fact that it can display the excerpt in the popup is awesome, and I can easily use this with my custom ACF Pro projects.” – Nick
-
-“This brand new plugin JUST WORKS PERFECT! SO easy to use and made with clean code. AND so important: SO EASY to adapt THE LANGUAGE to your local with just adding a word in the shortcode.” – Pirinuvol
-
-“This plugin works right out of the box and the fact that it can be tied to any custom post type is amazing.” – Clayton Chase
-
-Read all of our reviews on [WordPress.org](https://wordpress.org/plugins/pie-calendar/ "Pie Calendar Reviews")
