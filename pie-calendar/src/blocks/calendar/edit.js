@@ -133,6 +133,9 @@ function Calendar({ attributes, events }) {
         contentHeight="auto"
         locale={attributes.locale}
         headerToolbar={false}
+        validRange={attributes.hidepastevents ? {
+          start: new Date()
+        } : undefined}
       />
     </>
   );

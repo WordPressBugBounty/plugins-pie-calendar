@@ -87,7 +87,8 @@ function piecal_get_events( $request ) {
 	// Check if request is from block editor
 	if (!isset($_SERVER['HTTP_REFERER']) || 
         (strpos($_SERVER['HTTP_REFERER'], '/wp-admin/post.php') === false && 
-         strpos($_SERVER['HTTP_REFERER'], '/wp-admin/post-new.php') === false)) {
+         strpos($_SERVER['HTTP_REFERER'], '/wp-admin/post-new.php') === false &&
+		 strpos($_SERVER['HTTP_REFERER'], '/wp-admin/site-editor.php') === false)) {
         return new WP_Error('unauthorized', 'This endpoint is only available within the block editor', array('status' => 403));
     }
 

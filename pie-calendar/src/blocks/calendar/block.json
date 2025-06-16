@@ -56,6 +56,10 @@
     "featuredimage": {
       "type": "boolean",
       "default": false
+    },
+    "hidepastevents": {
+      "type": "boolean",
+      "default": false
     }
   },
   "textdomain": "piecal",

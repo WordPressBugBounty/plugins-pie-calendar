@@ -79,6 +79,11 @@ Class General {
     }
 
     public static function shouldAddMetabox( $post_type ) {
+        $hidePiecalControls = apply_filters( 'piecal_hide_controls', false );
+
+        if( $hidePiecalControls )
+            return false;
+
         $unsupported_post_types = [];
 
         $explicitAllowedPostTypes = apply_filters( 'piecal_explicit_allowed_post_types', [] );

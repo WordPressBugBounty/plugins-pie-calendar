@@ -52,8 +52,9 @@ if ( ! function_exists( 'piecal_classic_metabox_callback' ) ) {
                 align-items: center;
             }
     
-            .piecal-metabox-wrapper > label > input {
-                max-width: 300px;
+            .piecal-metabox-wrapper > label > input:not([type="checkbox"]) {
+                max-width: 250px;
+                width: 100%;
             }
         </style>
         <div class="piecal-metabox-wrapper">

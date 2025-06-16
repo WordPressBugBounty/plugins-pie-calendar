@@ -3,9 +3,9 @@ Contributors: apexws, spellhammer
 Tags: events, calendar, event
 Donate link: https://piecalendar.com
 Requires at least: 5.9
-Tested up to: 6.8
+Tested up to: 6.8.1
 Requires PHP: 7.4
-Stable tag: 1.2.7
+Stable tag: 1.2.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -88,6 +88,12 @@ Feel free to read our documentation for more detailed info: [docs.piecalendar.co
 1. default
 
 == Changelog ==
+
+= 1.2.8 =
+* i18n: Calendar controls in Gutenberg sidebar are now translatable via tools like Loco Translate
+* Tweak: Added new filter to hide Pie Calendar controls: add_filter( 'piecal_hide_controls', '__return_true', 10, 1 );
+* Tweak: Adjusted width of classic metabox input for better appearance on narrow screens
+* Fix: piecalGbVars not defined error when using blocks in a block theme template
 
 = 1.2.7 =
 * New: Added calendar blocks for the Block Editor

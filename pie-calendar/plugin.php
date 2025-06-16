@@ -9,7 +9,7 @@
  * Plugin Name:       Pie Calendar
  * Plugin URI:        https://piecalendar.com
  * Description:       Turn any post type into a calendar event and display it on a calendar.
- * Version:           1.2.7
+ * Version:           1.2.8
  * Author:            Elijah Mills & Jonathan Jernigan
  * Author URI:        https://piecalendar.com/about
  * License:           GPL-2.0+
@@ -25,7 +25,7 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-define( 'PIECAL_VERSION', '1.2.7' );
+define( 'PIECAL_VERSION', '1.2.8' );
 define( 'PIECAL_PATH', plugin_dir_url( __FILE__ ) );
 define( 'PIECAL_DIR', plugin_dir_path( __FILE__ ) );
 
@@ -177,7 +177,7 @@ add_action(
 			'piecalendar-custom-meta-plugin',
 			PIECAL_PATH . '/build/index.js',
 			array( 'wp-edit-post' ),
-			'prov1.3.4',
+			PIECAL_VERSION,
 			false
 		);
 	}
@@ -185,17 +185,44 @@ add_action(
 
 // Localize some information in Gutenberg for access in our custom meta script & blocks
 function piecal_gutenberg_vars() {
+	global $wp_scripts;
+	$enqueued_scripts = array();
+
+	if ($wp_scripts && !empty($wp_scripts->queue)) {
+		foreach ($wp_scripts->queue as $handle) {
+			$enqueued_scripts[] = $handle;
+		}
+	}
+
+	require_once PIECAL_DIR . '/includes/utils/Strings.php';
+
+	// Vars for both localization calls, primary and fallback.
+	$vars = array(
+		'isWooActive'              => is_plugin_active( 'woocommerce/woocommerce.php' ),
+		'isEddActive'              => is_plugin_active( 'easy-digital-downloads/easy-digital-downloads.php' ),
+		'explicitAllowedPostTypes' => apply_filters( 'piecal_explicit_allowed_post_types', array() ),
+		'dateFormat'              => get_option( 'date_format' ),
+		'timeFormat'              => get_option( 'time_format' ),
+		'hidePiecalControls'      => apply_filters( 'piecal_hide_controls', false ),
+		'strings'                 => Piecal\Utils\Strings::piecalStrings( 'piecal'),
+	);
+
 	wp_localize_script(
 		'piecalendar-custom-meta-plugin',
 		'piecalGbVars',
-		array(
-			'isWooActive'              => is_plugin_active( 'woocommerce/woocommerce.php' ),
-			'isEddActive'              => is_plugin_active( 'easy-digital-downloads/easy-digital-downloads.php' ),
-			'explicitAllowedPostTypes' => apply_filters( 'piecal_explicit_allowed_post_types', array() ),
-			'dateFormat'              => get_option( 'date_format' ),
-			'timeFormat'              => get_option( 'time_format' ),
-		)
+		$vars
 	);
+
+	// Fallback for when the custom meta script is not enqueued, but we still need these vars for the blocks.
+	if( ! in_array( 'piecalendar-custom-meta-plugin', $enqueued_scripts ) ) {
+		wp_localize_script(
+			'piecal-calendar-editor-script',
+			'piecalGbVars',
+			$vars
+		);
+	}
+
+	
 }
 add_action( 'enqueue_block_editor_assets', 'piecal_gutenberg_vars' );
 

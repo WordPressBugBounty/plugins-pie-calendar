@@ -10,12 +10,16 @@ const Piecal_Gutenberg_Sidebar_Plugin = ( { postType, postMeta, setPostMeta } ) 
 	// EDD downloads & WooCo products are not supported by default
 	if( ( piecalGbVars.isWooActive || piecalGbVars.isEddActive ) && ( postType == "product" || postType == "download" ) ) return null;
 	if( piecalGbVars.explicitAllowedPostTypes && piecalGbVars.explicitAllowedPostTypes.length > 0 && !piecalGbVars.explicitAllowedPostTypes.includes( postType ) ) return null;
+	if( piecalGbVars.hidePiecalControls ) return null;
+
+	// Get strings from piecalGbVars
+	const strings = piecalGbVars.strings || {};
 
 	return(
-		<PluginDocumentSettingPanel title={ __( 'Calendar', 'piecal') } initialOpen="true">
+		<PluginDocumentSettingPanel title={ strings.Calendar || 'Calendar' } initialOpen="true">
 			<PanelRow>
 				<ToggleControl
-					label={ __( 'Show On Calendar', 'piecal' ) }
+					label={ strings.Show_On_Calendar || 'Show On Calendar' }
 					onChange={ ( value ) => setPostMeta( { _piecal_is_event: value } ) }
 					checked={ postMeta._piecal_is_event }
 				/>
@@ -24,7 +28,7 @@ const Piecal_Gutenberg_Sidebar_Plugin = ( { postType, postMeta, setPostMeta } ) 
 				{
 					postMeta._piecal_is_event &&
 						<ToggleControl
-						label={ __( 'All Day Event', 'piecal' ) }
+						label={ strings.All_Day_Event || 'All Day Event' }
 						onChange={ ( value ) => setPostMeta( { _piecal_is_allday: value } ) }
 						checked={ postMeta._piecal_is_allday }
 						/>
@@ -46,11 +50,11 @@ const Piecal_Gutenberg_Sidebar_Plugin = ( { postType, postMeta, setPostMeta } ) 
 							{ ( postMeta._piecal_start_date == '' || postMeta._piecal_start_date == null ) ? 
 								<span>
 									<span class="dashicons dashicons-calendar"></span>
-									&nbsp; { __( 'Start Date', 'piecal' ) }
+									&nbsp; { strings.Start_Date || 'Start Date' }
 								</span>
 							   : <span>
 									<span class="dashicons dashicons-yes"></span>
-									&nbsp; { __( 'Start Date', 'piecal' ) }
+									&nbsp; { strings.Start_Date || 'Start Date' }
 								</span>
 							}
 						</Button>
@@ -59,7 +63,7 @@ const Piecal_Gutenberg_Sidebar_Plugin = ( { postType, postMeta, setPostMeta } ) 
 						<div>
 							<DateTimePicker
 								currentDate={ postMeta._piecal_start_date }
-								label={ __( 'Start Date', 'piecal' ) }
+								label={ strings.Start_Date || 'Start Date' }
 								value={ postMeta._piecal_start_date }
 								onChange={ ( value ) => setPostMeta( { _piecal_start_date: value } ) }
 								is12Hour={ wp.date.getSettings().formats.time.toLowerCase().indexOf( 'a' ) !== -1 }
@@ -71,7 +75,7 @@ const Piecal_Gutenberg_Sidebar_Plugin = ( { postType, postMeta, setPostMeta } ) 
 								isDestructive="true"
 								onClick={ ( value ) => setPostMeta( { _piecal_start_date: null } ) }
 								>
-								{ __( 'Clear', 'piecal' ) }
+								{ strings.Clear || 'Clear' }
 								</Button>
 							</PanelRow>
 						</div>
@@ -90,11 +94,11 @@ const Piecal_Gutenberg_Sidebar_Plugin = ( { postType, postMeta, setPostMeta } ) 
 							{ ( postMeta._piecal_end_date == '' || postMeta._piecal_end_date == null ) ? 
 								<span>
 									<span class="dashicons dashicons-calendar"></span>
-									&nbsp; { __( 'End Date', 'piecal' ) }
+									&nbsp; { strings.End_Date || 'End Date' }
 								</span>
 							   : <span>
 									<span class="dashicons dashicons-yes"></span>
-									&nbsp; { __( 'End Date', 'piecal' ) }
+									&nbsp; { strings.End_Date || 'End Date' }
 								</span>
 							}
 						</Button>
@@ -103,7 +107,7 @@ const Piecal_Gutenberg_Sidebar_Plugin = ( { postType, postMeta, setPostMeta } ) 
 						<div>
 							<DateTimePicker
 								currentDate={ postMeta._piecal_end_date }
-								label={ __( 'End Date', 'piecal' ) }
+								label={ strings.End_Date || 'End Date' }
 								value={ postMeta._piecal_end_date }
 								onChange={ ( value ) => setPostMeta( { _piecal_end_date: value } ) }
 								is12Hour={ wp.date.getSettings().formats.time.toLowerCase().indexOf( 'a' ) !== -1 }
@@ -115,7 +119,7 @@ const Piecal_Gutenberg_Sidebar_Plugin = ( { postType, postMeta, setPostMeta } ) 
 									isDestructive="true"
 									onClick={ ( value ) => setPostMeta( { _piecal_end_date: null } ) }
 								>
-							    { __( 'Clear', 'piecal' ) }
+							    { strings.Clear || 'Clear' }
 								</Button>
 							</PanelRow>
 						</div>
@@ -126,13 +130,13 @@ const Piecal_Gutenberg_Sidebar_Plugin = ( { postType, postMeta, setPostMeta } ) 
 			{
 				( postMeta._piecal_start_date != '' && postMeta._piecal_start_date != null ) &&
 				<PanelRow>
-					<p>{ __('Starts on ', 'piecal') + new Date(postMeta._piecal_start_date).toLocaleDateString(localeCode.replace('_', '-'), { weekday:"long", year:"numeric", month:"short", day:"numeric"}) }</p>
+					<p>{ (strings.Starts_on_ || 'Starts on ') + new Date(postMeta._piecal_start_date).toLocaleDateString(localeCode.replace('_', '-'), { weekday:"long", year:"numeric", month:"short", day:"numeric"}) }</p>
 				</PanelRow>
 			}
 			{
 				( postMeta._piecal_end_date != '' && postMeta._piecal_end_date != null ) &&
 				<PanelRow>
-					<p>{ __('Ends on ', 'piecal') + new Date(postMeta._piecal_end_date).toLocaleDateString(localeCode.replace('_', '-'), { weekday:"long", year:"numeric", month:"short", day:"numeric"}) }</p>
+					<p>{ (strings.Ends_on_ || 'Ends on ') + new Date(postMeta._piecal_end_date).toLocaleDateString(localeCode.replace('_', '-'), { weekday:"long", year:"numeric", month:"short", day:"numeric"}) }</p>
 				</PanelRow>
 			}
 		</PluginDocumentSettingPanel>
