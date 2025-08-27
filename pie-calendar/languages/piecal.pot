@@ -2,14 +2,14 @@
 # This file is distributed under the GPL-2.0+.
 msgid ""
 msgstr ""
-"Project-Id-Version: Pie Calendar 1.2.8\n"
+"Project-Id-Version: Pie Calendar 1.2.9\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/pie-calendar\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-06-09T19:46:15+00:00\n"
+"POT-Creation-Date: 2025-08-27T13:24:40+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: piecal\n"
@@ -37,6 +37,55 @@ msgstr ""
 #. Author URI of the plugin
 #: plugin.php
 msgid "https://piecalendar.com/about"
+msgstr ""
+
+#. Translators: String for Upcoming view in view picker dropdown.
+#: includes/block.php:193
+#: includes/block.php:245
+#: includes/utils/Views.php:88
+msgid "List - Upcoming"
+msgstr ""
+
+#. Translators: String for Month - Classic view in view picker dropdown.
+#: includes/block.php:205
+#: includes/shortcode.php:156
+msgid "Month - Classic"
+msgstr ""
+
+#. Translators: String for Month - List view in view picker dropdown.
+#: includes/block.php:207
+#: includes/shortcode.php:158
+msgid "Month - List"
+msgstr ""
+
+#. Translators: String for Week - Time Grid view in view picker dropdown.
+#: includes/block.php:209
+#: includes/shortcode.php:160
+msgid "Week - Time Grid"
+msgstr ""
+
+#. Translators: String for Week - List view in view picker dropdown.
+#: includes/block.php:211
+#: includes/shortcode.php:162
+msgid "Week - List"
+msgstr ""
+
+#. Translators: String for Week - Day Grid view in view picker dropdown.
+#: includes/block.php:213
+msgid "Week - Classic"
+msgstr ""
+
+#. Translators: String for Day - List view in view picker dropdown.
+#: includes/block.php:215
+#: includes/shortcode.php:166
+msgid "Day - List"
+msgstr ""
+
+#: includes/block.php:229
+#: build/blocks/calendar/index.js:1
+#: src/blocks/calendar/edit.js:392
+#: src/blocks/calendar/edit.js:409
+msgid "Default"
 msgstr ""
 
 #. Translators: Label for Pie Calendar classic metabox.
@@ -84,7 +133,7 @@ msgstr ""
 
 #. Translators: This string is for displaying the viewer's time zone via the Pie Calendar Info shortcode
 #: includes/piecal-info-shortcode.php:37
-#: includes/shortcode.php:638
+#: includes/shortcode.php:552
 msgid "Event times are listed in your local time zone: "
 msgstr ""
 
@@ -115,98 +164,45 @@ msgstr ""
 msgid " Lasts all day."
 msgstr ""
 
-#: includes/shortcode.php:309
-msgid "'All-day event'"
+#. Translators: String for Week - Day Grid view in view picker dropdown.
+#: includes/shortcode.php:164
+msgid "Week - Day Grid"
 msgstr ""
 
-#: includes/shortcode.php:324
-msgid "'to'"
-msgstr ""
-
-#: includes/shortcode.php:327
-msgid "'Multi-day event running from'"
-msgstr ""
-
-#: includes/shortcode.php:330
-msgid "'Multi-day, all-day event running from'"
-msgstr ""
-
-#: includes/shortcode.php:486
+#: includes/shortcode.php:431
 msgid "Skip Calendar"
 msgstr ""
 
-#: includes/shortcode.php:498
+#: includes/shortcode.php:443
 msgid "Back to full month view."
 msgstr ""
 
-#: includes/shortcode.php:500
+#: includes/shortcode.php:445
 msgid "Back To Full Month"
 msgstr ""
 
 #. Translators: Label for calendar view chooser.
-#: includes/shortcode.php:505
+#: includes/shortcode.php:450
 msgid "Choose View"
 msgstr ""
 
-#. Translators: String for Month - Classic view in view picker dropdown.
-#: includes/shortcode.php:511
-#: build/blocks/calendar/index.js:1
-#: src/blocks/calendar/edit.js:280
-msgid "Month - Classic"
-msgstr ""
-
-#. Translators: String for Month - List view in view picker dropdown.
-#: includes/shortcode.php:517
-#: build/blocks/calendar/index.js:1
-#: src/blocks/calendar/edit.js:283
-msgid "Month - List"
-msgstr ""
-
-#. Translators: String for Week - Time Grid view in view picker dropdown.
-#: includes/shortcode.php:523
-#: build/blocks/calendar/index.js:1
-#: src/blocks/calendar/edit.js:285
-msgid "Week - Time Grid"
-msgstr ""
-
-#. Translators: String for Week - List view in view picker dropdown.
-#: includes/shortcode.php:529
-#: build/blocks/calendar/index.js:1
-#: src/blocks/calendar/edit.js:288
-msgid "Week - List"
-msgstr ""
-
-#. Translators: String for Week - Classic view in view picker dropdown.
-#: includes/shortcode.php:535
-#: build/blocks/calendar/index.js:1
-#: src/blocks/calendar/edit.js:289
-msgid "Week - Classic"
-msgstr ""
-
-#. Translators: String for Day - Classic view in view picker dropdown.
-#: includes/shortcode.php:541
-#: build/blocks/calendar/index.js:1
-#: src/blocks/calendar/edit.js:290
-msgid "Day"
-msgstr ""
-
 #. Translators: Label for close button in Pie Calendar popover.
-#: includes/shortcode.php:578
+#: includes/shortcode.php:492
 msgid "Close event details"
 msgstr ""
 
 #. Translators: Label for event start date in Pie Calendar popover.
-#: includes/shortcode.php:591
+#: includes/shortcode.php:505
 msgid "Starts"
 msgstr ""
 
 #. Translators: Label for event end date in Pie Calendar popover.
-#: includes/shortcode.php:600
+#: includes/shortcode.php:514
 msgid "Ends"
 msgstr ""
 
 #. Translators: Label for "View <Post Type>" in Pie Calendar popover.
-#: includes/shortcode.php:619
+#: includes/shortcode.php:533
 msgid "View "
 msgstr ""
 
@@ -230,7 +226,7 @@ msgstr ""
 msgid "Ends on "
 msgstr ""
 
-#: plugin.php:147
+#: plugin.php:148
 msgid ""
 "<p>Pie Calendar has been activated.</p> \n"
 "\t\t\t\t<details>\n"
@@ -246,11 +242,11 @@ msgid ""
 "\t\t\t\t<p><a href='?piecal-dismiss-notice=true'>Dismiss this notice.</a></p>"
 msgstr ""
 
-#: plugin.php:237
+#: plugin.php:245
 msgid "Navigate to the Pie Calendar website to purchase the Pro version."
 msgstr ""
 
-#: plugin.php:238
+#: plugin.php:246
 msgid "Upgrade to Pro"
 msgstr ""
 
@@ -260,114 +256,117 @@ msgid "Default (Browser Language)"
 msgstr ""
 
 #: build/blocks/calendar/index.js:1
-#: src/blocks/calendar/edit.js:235
+#: src/blocks/calendar/edit.js:311
 msgid "Calendar Settings"
 msgstr ""
 
 #: build/blocks/calendar/index.js:1
-#: src/blocks/calendar/edit.js:239
+#: src/blocks/calendar/edit.js:315
 msgid "Post Types"
 msgstr ""
 
 #: build/blocks/calendar/index.js:1
-#: src/blocks/calendar/edit.js:261
+#: src/blocks/calendar/edit.js:337
 msgid "Select post types to display in the calendar."
 msgstr ""
 
 #: build/blocks/calendar/index.js:1
-#: src/blocks/calendar/edit.js:271
+#: src/blocks/calendar/edit.js:347
 msgid "View"
 msgstr ""
 
 #: build/blocks/calendar/index.js:1
-#: src/blocks/calendar/edit.js:273
+#: src/blocks/calendar/edit.js:349
 msgid "Choose the default calendar view that visitors will see when the page loads."
 msgstr ""
 
 #: build/blocks/calendar/index.js:1
-#: src/blocks/calendar/edit.js:278
-#: src/blocks/calendar/edit.js:305
-#: src/blocks/calendar/edit.js:322
-msgid "Default"
+#: src/blocks/calendar/edit.js:360
+msgid "Duration"
 msgstr ""
 
 #: build/blocks/calendar/index.js:1
-#: src/blocks/calendar/edit.js:298
+#: src/blocks/calendar/edit.js:362
+msgid "Choose the number of months the calendar view should span, starting from beginning of current month. Minimum of 1, maximum of 24."
+msgstr ""
+
+#: build/blocks/calendar/index.js:1
+#: src/blocks/calendar/edit.js:385
 msgid "Widget"
 msgstr ""
 
 #: build/blocks/calendar/index.js:1
-#: src/blocks/calendar/edit.js:300
+#: src/blocks/calendar/edit.js:387
 msgid "Enable widget mode for a more compact calendar suitable for sidebars. 'Responsive' switches to widget mode on mobile only."
 msgstr ""
 
 #: build/blocks/calendar/index.js:1
-#: src/blocks/calendar/edit.js:306
+#: src/blocks/calendar/edit.js:393
 msgid "True"
 msgstr ""
 
 #: build/blocks/calendar/index.js:1
-#: src/blocks/calendar/edit.js:307
+#: src/blocks/calendar/edit.js:394
 msgid "Responsive"
 msgstr ""
 
 #: build/blocks/calendar/index.js:1
-#: src/blocks/calendar/edit.js:315
+#: src/blocks/calendar/edit.js:402
 msgid "Theme"
 msgstr ""
 
 #: build/blocks/calendar/index.js:1
-#: src/blocks/calendar/edit.js:317
+#: src/blocks/calendar/edit.js:404
 msgid "Choose between light, dark, or adaptive theme. Adaptive will match your visitor's system preferences."
 msgstr ""
 
 #: build/blocks/calendar/index.js:1
-#: src/blocks/calendar/edit.js:323
+#: src/blocks/calendar/edit.js:410
 msgid "Dark"
 msgstr ""
 
 #: build/blocks/calendar/index.js:1
-#: src/blocks/calendar/edit.js:324
+#: src/blocks/calendar/edit.js:411
 msgid "Adaptive"
 msgstr ""
 
 #: build/blocks/calendar/index.js:1
-#: src/blocks/calendar/edit.js:331
+#: src/blocks/calendar/edit.js:418
 msgid "Wrap Titles"
 msgstr ""
 
 #: build/blocks/calendar/index.js:1
-#: src/blocks/calendar/edit.js:333
+#: src/blocks/calendar/edit.js:420
 msgid "When enabled, event titles will wrap to multiple lines instead of being truncated with an ellipsis."
 msgstr ""
 
 #: build/blocks/calendar/index.js:1
-#: src/blocks/calendar/edit.js:342
+#: src/blocks/calendar/edit.js:429
 msgid "Locale"
 msgstr ""
 
 #: build/blocks/calendar/index.js:1
-#: src/blocks/calendar/edit.js:344
+#: src/blocks/calendar/edit.js:431
 msgid "Use a locale code to change the language of the calendar. For example, 'en-US' for English (United States)."
 msgstr ""
 
 #: build/blocks/calendar/index.js:1
-#: src/blocks/calendar/edit.js:354
+#: src/blocks/calendar/edit.js:441
 msgid "Hide Timezone"
 msgstr ""
 
 #: build/blocks/calendar/index.js:1
-#: src/blocks/calendar/edit.js:356
+#: src/blocks/calendar/edit.js:443
 msgid "Tick this box to hide the event timezone from the calendar footer."
 msgstr ""
 
 #: build/blocks/calendar/index.js:1
-#: src/blocks/calendar/edit.js:368
+#: src/blocks/calendar/edit.js:455
 msgid "Disable Automatic End Dates"
 msgstr ""
 
 #: build/blocks/calendar/index.js:1
-#: src/blocks/calendar/edit.js:370
+#: src/blocks/calendar/edit.js:457
 msgid "By default, events with no end date will automatically end 1 hour after their start time. Disable to show events with no end date."
 msgstr ""
 
@@ -511,6 +510,25 @@ msgstr ""
 #: build/blocks/event-info/index.js:1
 #: src/blocks/event-info/edit.js:151
 msgid "Hide Prepend Text"
+msgstr ""
+
+#: includes/js/piecal.js:137
+msgid "All-day event"
+msgstr ""
+
+#. Translators: Text describing span of multi-day event.
+#: includes/js/piecal.js:151
+msgid "to"
+msgstr ""
+
+#. Translators: Text for multi-day event description.
+#: includes/js/piecal.js:154
+msgid "Multi-day event running from"
+msgstr ""
+
+#. Translators: Text for multi-day all-day event description.
+#: includes/js/piecal.js:157
+msgid "Multi-day, all-day event running from"
 msgstr ""
 
 #: build/blocks/calendar/block.json

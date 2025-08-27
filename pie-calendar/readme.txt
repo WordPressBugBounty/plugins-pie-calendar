@@ -1,11 +1,11 @@
-=== Events Calendar Made Simple – Pie Calendar ===
+=== WordPress Events Calendar Plugin – Pie Calendar ===
 Contributors: apexws, spellhammer
 Tags: events, calendar, event
 Donate link: https://piecalendar.com
 Requires at least: 5.9
-Tested up to: 6.8.1
+Tested up to: 6.8.2
 Requires PHP: 7.4
-Stable tag: 1.2.8
+Stable tag: 1.2.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -88,6 +88,13 @@ Feel free to read our documentation for more detailed info: [docs.piecalendar.co
 1. default
 
 == Changelog ==
+
+= 1.2.9 =
+* New: Custom views API. See our documentation for more information.
+* New: List - Upcoming view with duration attribute, useful for sites that have fewer events spread out over multiple months to prevent showing an empty calendar.
+* Security: Fixed Authenticated (Contributor+) Stored-XSS vulnerability related to theme attribute reported to us on August 21st.
+* Fix: Renamed alpine dependency to indicate it's minified. This may resolve issues with some optimization plugins.
+* Tweak: Adjusted view chooser dropdown styles.
 
 = 1.2.8 =
 * i18n: Calendar controls in Gutenberg sidebar are now translatable via tools like Loco Translate

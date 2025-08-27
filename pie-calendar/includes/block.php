@@ -16,10 +16,10 @@ function piecal_register_block_type() {
 
 	$block_path = PIECAL_DIR . 'build/blocks/event-info/block.json';
 	register_block_type( $block_path );
+
+	wp_register_style( 'piecal-block-inline-styles', false );
 }
 add_action( 'init', 'piecal_register_block_type' );
-
-
 
 /**
  * Remove any default atts if they are empty.
@@ -56,11 +56,11 @@ add_filter( 'piecal_info_block_atts', 'piecal_info_block_atts_filter' );
 
 
 /**
- * Register the REST endpoint.
+ * Register the REST endpoints.
  *
  * @return void
  */
-function piecal_register_rest_endpoint() {
+function piecal_register_rest_endpoints() {
 	register_rest_route(
 		'piecal/v1',
 		'/events',
@@ -72,8 +72,32 @@ function piecal_register_rest_endpoint() {
 			},
 		)
 	);
+
+	register_rest_route(
+		'piecal/v1',
+		'/views',
+		array(
+			'methods'             => 'GET',
+			'callback'            => 'piecal_get_views',
+			'permission_callback' => function () {
+				return current_user_can( 'edit_posts' );
+			},
+		)
+	);
+
+	register_rest_route(
+		'piecal/v1',
+		'/views_array',
+		array(
+			'methods'             => 'GET',
+			'callback'            => 'piecal_get_views_array',
+			'permission_callback' => function () {
+				return current_user_can( 'edit_posts' );
+			},
+		)
+	);
 }
-add_action( 'rest_api_init', 'piecal_register_rest_endpoint' );
+add_action( 'rest_api_init', 'piecal_register_rest_endpoints' );
 
 
 /**
@@ -136,7 +160,9 @@ function piecal_get_events( $request ) {
 				'title'  => $event->post_title,
 				'start'  => get_post_meta( $event->ID, '_piecal_start_date', true ),
 				'end'    => get_post_meta( $event->ID, '_piecal_end_date', true ),
-				'allDay' => get_post_meta(get_the_ID(), '_piecal_is_allday') ? get_post_meta(get_the_ID(), '_piecal_is_allday', true) : "false"
+				'allDay' => get_post_meta(get_the_ID(), '_piecal_is_allday') ? get_post_meta(get_the_ID(), '_piecal_is_allday', true) : "false",
+				"details" => str_replace("&amp;", "&", htmlentities(get_the_excerpt(), ENT_QUOTES) ),
+                "permalink" => get_permalink(),
 			);
 
 			$event = apply_filters( 'piecal_event_array_filter', $event );
@@ -151,4 +177,83 @@ function piecal_get_events( $request ) {
 	$events = apply_filters( 'piecal_events_array_filter', $events, null, null, ( ! isset( $atts['allAttributes']['adaptivetimezone'] ) && apply_filters( 'piecal_use_adaptive_timezones', false ) ) );
 
 	return rest_ensure_response( $events );
+}
+
+function piecal_get_views( $request ) {
+	require_once PIECAL_DIR . '/includes/utils/Views.php';
+
+	$customViews = [
+        "listUpcoming" => [
+            "type" => "listMonth",
+            "duration" => [
+                "months" => isset( $atts['duration'] ) ? intval( $atts['duration'] ) : 2
+            ],
+            "customProps" => [
+                /* Translators: String for Upcoming view in view picker dropdown. */
+                "niceName" => __( 'List - Upcoming', 'piecal' )
+            ]
+        ]
+    ];
+
+    $customViews = apply_filters( 'piecal_custom_views', $customViews, [] );
+    
+    $allowedViews = ['dayGridMonth', 'listMonth', 'timeGridWeek', 'listWeek', 'dayGridWeek', 'listDay'];
+    $allowedViews = apply_filters('piecal_allowed_views', $allowedViews);
+    
+    $viewLabels = [
+        /* Translators: String for Month - Classic view in view picker dropdown. */
+        "dayGridMonth" => __( 'Month - Classic', 'piecal' ),
+        /* Translators: String for Month - List view in view picker dropdown. */
+        "listMonth" => __( 'Month - List', 'piecal' ),
+        /* Translators: String for Week - Time Grid view in view picker dropdown. */
+        "timeGridWeek" => __( 'Week - Time Grid', 'piecal' ),
+        /* Translators: String for Week - List view in view picker dropdown. */
+        "listWeek" => __( 'Week - List', 'piecal' ),
+        /* Translators: String for Week - Day Grid view in view picker dropdown. */
+        "dayGridWeek" => __( 'Week - Classic', 'piecal' ),
+        /* Translators: String for Day - List view in view picker dropdown. */
+        "listDay" => __( 'Day - List', 'piecal' )
+    ];
+    $viewLabels = apply_filters('piecal_view_labels', $viewLabels);
+
+	$reformattedViewLabels = [];
+
+	foreach ($viewLabels as $view => $label) {
+		$reformattedViewLabels[] = [
+			'label' => $label,
+			'value' => $view
+		];
+	}
+
+	array_unshift($reformattedViewLabels, [
+		'label' => __("Default", "piecal"),
+		'value' => ""
+	]);
+
+	return rest_ensure_response( $reformattedViewLabels );
+}
+
+function piecal_get_views_array() {
+	$customViews = [
+        "listUpcoming" => [
+            "type" => "listMonth",
+            "duration" => [
+                "months" => isset( $_GET['duration'] ) ? intval( $_GET['duration'] ) : 2
+            ],
+            "customProps" => [
+                /* Translators: String for Upcoming view in view picker dropdown. */
+                "niceName" => __( 'List - Upcoming', 'piecal' )
+            ]
+        ]
+    ];
+
+	$atts['duration'] = isset( $_GET['duration'] ) ? intval( $_GET['duration'] ) : 2;
+	$atts['duration'] = $atts['duration'] > 24 ? 24 : $atts['duration'];
+	$atts['duration'] = $atts['duration'] < 1 ? 1 : $atts['duration'];
+
+	$atts['duration'] = apply_filters( 'piecal_override_view_duration', $atts['duration'] );
+
+	$customViews = apply_filters( 'piecal_custom_views', $customViews, $atts );
+
+	return rest_ensure_response( $customViews );
 }

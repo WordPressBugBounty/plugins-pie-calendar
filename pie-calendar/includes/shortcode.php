@@ -1,6 +1,7 @@
 <?php
 
 require_once PIECAL_DIR . '/includes/utils/Scripts.php';
+require_once PIECAL_DIR . '/includes/utils/Views.php';
 
 add_shortcode( 'piecal', 'piecal_render_calendar' );
 
@@ -8,6 +9,7 @@ if ( ! function_exists( 'piecal_render_calendar' ) ) {
 
 	function piecal_render_calendar( $atts ) {
 		do_action( 'piecal_render_calendar', $atts );
+        do_action( 'piecal_inline_styles' );
 
 		Piecal\Utils\Scripts::loadCoreScriptsAndStyles();
 
@@ -136,16 +138,40 @@ if ( ! function_exists( 'piecal_render_calendar' ) ) {
             }
         }
 
-        $eventsArray = apply_filters('piecal_events_array_filter', $eventsArray, $rangeStart = null, $rangeEnd = null, $appendOffset);
+    $eventsArray = apply_filters('piecal_events_array_filter', $eventsArray, $rangeStart = null, $rangeEnd = null, $appendOffset);
 
-        remove_filter('excerpt_more', 'piecal_replace_read_more', 99);
+    remove_filter('excerpt_more', 'piecal_replace_read_more', 99);
 
-        $allowedViews = ['dayGridMonth', 'listMonth', 'timeGridWeek', 'listWeek', 'dayGridWeek', 'listDay'];
-        $initialView = $atts['view'] ?? 'dayGridMonth';
-        
-        if( !in_array($initialView, $allowedViews) ) {
-            $initialView = 'dayGridMonth';
-        }
+    $duration = isset( $atts['duration'] ) ? intval( $atts['duration'] ) : 2;
+    $duration = $duration > 24 ? 24 : $duration;
+    $duration = $duration < 1 ? 1 : $duration;
+
+    $atts['duration'] = apply_filters( 'piecal_override_view_duration', $duration );
+    
+    $allowedViews = ['dayGridMonth', 'listMonth', 'timeGridWeek', 'listWeek', 'dayGridWeek', 'listDay'];
+    $allowedViews = apply_filters('piecal_allowed_views', $allowedViews);
+    
+    $viewLabels = [
+        /* Translators: String for Month - Classic view in view picker dropdown. */
+        "dayGridMonth" => __( 'Month - Classic', 'piecal' ),
+        /* Translators: String for Month - List view in view picker dropdown. */
+        "listMonth" => __( 'Month - List', 'piecal' ),
+        /* Translators: String for Week - Time Grid view in view picker dropdown. */
+        "timeGridWeek" => __( 'Week - Time Grid', 'piecal' ),
+        /* Translators: String for Week - List view in view picker dropdown. */
+        "listWeek" => __( 'Week - List', 'piecal' ),
+        /* Translators: String for Week - Day Grid view in view picker dropdown. */
+        "dayGridWeek" => __( 'Week - Day Grid', 'piecal' ),
+        /* Translators: String for Day - List view in view picker dropdown. */
+        "listDay" => __( 'Day - List', 'piecal' )
+    ];
+    $viewLabels = apply_filters('piecal_view_labels', $viewLabels);
+
+    $initialView = $atts['view'] ?? 'dayGridMonth';
+    
+    if( !in_array($initialView, $allowedViews) ) {
+        $initialView = 'dayGridMonth';
+    }
 
     do_action('piecal_before_core_frontend_scripts');
 
@@ -165,14 +191,16 @@ if ( ! function_exists( 'piecal_render_calendar' ) ) {
     $allDayLocaleDateStringFormat = apply_filters( 'piecal_allday_locale_date_string_format', $allDayLocaleDateStringFormat );
 
     $wrapperClass = 'piecal-wrapper';
-    $wrapperViewAttribute = 'dayGridMonth';
+    $wrapperViewAttribute = $atts['view'] ?? 'dayGridMonth';
 
     if( isset( $atts['wraptitles'] ) ) {
         $wrapperClass .= ' piecal-wrap-event-titles';
     }
 
-    if( isset( $atts['theme'] ) ) {
-        $wrapperClass .= ' piecal-theme-' . $atts['theme'];
+    $allowedThemes = ['dark',  'adaptive'];
+
+    if( isset( $atts['theme'] ) && in_array( $atts['theme'], $allowedThemes ) ) {
+        $wrapperClass .= ' piecal-theme-' . esc_attr( $atts['theme'] );
     }
 
     if( isset( $atts['widget'] ) && $atts['widget'] == 'true' ) {
@@ -189,7 +217,10 @@ if ( ! function_exists( 'piecal_render_calendar' ) ) {
     $customCalendarProps = [];
     $customCalendarProps = apply_filters('piecal_calendar_object_properties', $customCalendarProps, $eventsArray, $appendOffset, $atts);
 
+    $views = Piecal\Utils\Views::addCustomViews( [] );
+    
     ob_start();
+
     ?>
     <script>
             let piecalAJAX = {
@@ -198,6 +229,46 @@ if ( ! function_exists( 'piecal_render_calendar' ) ) {
             }
 
             let alreadyExpandedOccurrences = [];
+
+            function piecalPrepareCustomViewsForCalendar( views ) {
+                let supportedEventHandlers = [
+                    'eventDataTransform',
+                    'dateClick',
+                    'eventClick', 
+                    'eventDidMount', 
+                    'dayCellDidMount', 
+                    'viewDidMount', 
+                    'viewWillUnmount',
+                    'dayHeaderContent',
+                    'dayHeaderDidMount'
+                ];
+
+                for( let view in views ) {
+                    let viewProps = views[view];
+
+                    for( let prop in viewProps ) {
+                        if( supportedEventHandlers.includes( prop ) ) {
+                            let eventHandlerCode = viewProps[prop];
+
+                            let handlerFunction = new Function( 'info', eventHandlerCode );
+
+                            viewProps[prop] = handlerFunction;
+                        }
+                    }
+
+                    // Remove customProps since we don't want those output inside the calendar object
+                    delete viewProps.customProps;
+
+                    // Add in the $atts['duration'] value if the view has a duration property.
+                    if( viewProps.duration ) {
+                        viewProps.duration = {
+                            months: <?php echo intval($duration); ?>
+                        };
+                    }
+                }
+
+                return views;
+            }
             
             document.addEventListener('DOMContentLoaded', function() {
                 var pieCalendarFirstLoad = true;
@@ -212,189 +283,45 @@ if ( ! function_exists( 'piecal_render_calendar' ) ) {
                     locale: "<?php echo esc_attr( $locale ); ?>",
                     eventTimeFormat: <?php echo json_encode($localeDateStringFormat); ?>,
                     dayHeaderFormat: { weekday: 'long' },
+                    views: piecalPrepareCustomViewsForCalendar(<?php echo json_encode($views); ?>),
                     eventClick: function( info ) {
-                        Alpine.store("calendarEngine").eventTitle = info.event._def.title;
-                        Alpine.store("calendarEngine").eventStart = info.event.start;
-                        Alpine.store("calendarEngine").eventEnd = info.event.end;
-                        Alpine.store("calendarEngine").eventDetails = info.event._def.extendedProps.details;
-                        Alpine.store("calendarEngine").eventUrl = info.event._def.extendedProps.permalink;
-                        Alpine.store("calendarEngine").eventAllDay = info.event.allDay;
-                        Alpine.store("calendarEngine").eventType = info.event._def.extendedProps.postType;
-                        Alpine.store('calendarEngine').showPopover = true;
-                        Alpine.store('calendarEngine').eventActualEnd = info.event._def.extendedProps.actualEnd;
-                        Alpine.store('calendarEngine').appendOffset = "<?php echo $appendOffset; ?>";
-
-                        // Always pass through event data via the URL if it's a recurring instance, or if adaptive timezones are enabled.
-                        // Do not pass through event data via the URL if it's a non-recurring instance and adaptive timezones are disabled.
-                        if( info.event._def.extendedProps.isRecurringInstance || ( !info.event._def.extendedProps.isRecurringInstance && piecalVars.useAdaptiveTimezones && Alpine.store('calendarEngine').appendOffset ) ) {
-                            // Construct the URL with parameters
-                            const baseUrl    = info.event._def.extendedProps.permalink;
-                            const eventStart = new Date( info.event.start );
-                            const eventEnd   = new Date( info.event.end );
-                            const viewerTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-
-                            const url        = new URL( baseUrl );
-                            url.searchParams.append( 'eventstart', Math.floor( eventStart.getTime() / 1000 ) );
-                            url.searchParams.append( 'eventend', Math.floor( eventEnd.getTime() / 1000 ) );
-                            url.searchParams.append( 'timezone', viewerTimezone );
-
-                            // Assign the constructed URL to the store
-                            Alpine.store("calendarEngine").eventUrl = url.toString();
-                        }
+                        info = piecalJS.eventClick( info, {
+                            appendOffset: <?php echo $appendOffset ? 'true' : 'false'; ?>
+                        } );
 
                         <?php do_action( 'piecal_additional_event_click_js' ); ?>
-
-                        if( info.jsEvent.type == "keydown" ) {
-                            setTimeout( () => {
-                                document.querySelector('.piecal-popover__inner > button').focus();
-                            }, 100);
-                        }
                     },
                     eventDataTransform: function(event) {  
-                        // Safely decode encoded HTML entities for output as titles
-                        let scrubber = document.createElement('textarea');
-                        scrubber.innerHTML = event.title;
-                        event.title = scrubber.value;
-
-                        // Extend end date for all day events that span multiple days
-                        let { actualEnd, end } = piecalUtils.getAlldayMultidayEventEnd( event ) ?? {};
-
-                        if( actualEnd && end ) {    
-                            event.actualEnd = actualEnd;
-                            event.end = end;
-                        }
+                        event = piecalJS.eventDataTransform( event );
 
                         <?php do_action( 'piecal_additional_event_data_transform_js' ); ?>
 
                         return event;  
                     },
                     dateClick: function( info ) {
-                        if( info.jsEvent.target.tagName != 'A' ) return;
-
-                        this.gotoDate(info.dateStr);
-                        piecalChangeView('listDay');
-                        
+                        info = piecalJS.dateClick( info );
 
                         <?php do_action( 'piecal_additional_date_click_js' ); ?>
                     },
                     eventDidMount: function( info ) {
-                        let link = info.el;
-
-                        const locale = info.view.dateEnv.locale.codeArg;
-
-                        const formattedTime = new Intl.DateTimeFormat(locale, {
-                            hour: 'numeric',
-                            minute: 'numeric',
-                            hour12: true
-                        });
-
-                        const formattedDate = new Intl.DateTimeFormat(locale, {
-                            day: 'numeric',
-                            month: 'numeric',
-                            year: 'numeric'
-                        });
-
-                        if( link.tagName == 'TR' ) {
-                            link = info.el.querySelector('a');
-                        }
-
-                        if( !link || link.tagName != "A" ) return;
-
-                        link.setAttribute('role', 'button');
-                        link.setAttribute('href', 'javascript:void(0)');
-
-                        if( info.event.allDay ) {
-                            /* Translators: Text for all-day event description. */
-                            const allDayDescriptionText = <?php _e("'All-day event'", 'piecal'); ?>;
-
-                            link.setAttribute('aria-label', `${allDayDescriptionText} - ${info.event.title}`);
-                        }
-
-                        // Handle multi-day event aria label to let screen readers know the event spans multiple days
-                        if( info.event.end && (info.event.end - info.event.start) > (24 * 60 * 60 * 1000) ) {
-                            
-                            const startDate = formattedDate.format(info.event.start);
-                            const startTime = info.event.allDay ? '' : formattedTime.format(info.event.start);
-
-                            const endDate = formattedDate.format(info.event.end);
-                            const endTime = info.event.allDay ? '' :formattedTime.format(info.event.end);
-
-                            /* Translators: Text describing span of multi-day event. */
-                            const spanText = <?php _e("'to'", 'piecal'); ?>;
-
-                            /* Translators: Text for multi-day event description. */
-                            const multiDayDescriptionText = <?php _e("'Multi-day event running from'", 'piecal'); ?>;
-
-                            /* Translators: Text for multi-day all-day event description. */
-                            const multiDayAllDayDescriptionText = <?php _e("'Multi-day, all-day event running from'", 'piecal'); ?>;
-
-                            const descriptionText = info.event.allDay ? multiDayAllDayDescriptionText : multiDayDescriptionText;
-
-                            /* Translators: Text describing span of multi-day event. */
-                            link.setAttribute('aria-label', `${descriptionText} ${startDate} ${startTime} ${spanText} ${endDate} ${endTime} - ${info.event.title}`);
-                        }
+                        info = piecalJS.eventDidMount( info );
 
                         <?php do_action( 'piecal_additional_event_did_mount_js' ); ?>
                     },
                     dayCellDidMount: function( info ) {
-                        let dayLink = info.el.querySelector('.fc-daygrid-day-top a');
-
-                        if( !dayLink ) return;
-
-                        dayLink.setAttribute('role', 'button');
-                        dayLink.setAttribute('href', 'javascript:void(0)');
-
-                        // Prevent double read out of button label
-                        dayLink.closest('td').removeAttribute('aria-labelledby');
-                        
-                        setTimeout( () => {
-                            if( info.el.querySelector('.fc-daygrid-day-events .fc-daygrid-event-harness') ) {
-                                dayLink.setAttribute('aria-label', dayLink.getAttribute('aria-label') + ', has events.');
-                            }
-                        }, 100);
-
-                        dayLink.addEventListener('keydown', (event) => {
-                            if( event.key == "Enter" || event.key == ' ' ) {
-                                event.preventDefault();
-                                window.calendar.gotoDate(info.date);
-                                piecalChangeView('listDay');
-
-                                setTimeout( () => {
-                                    let focusTarget = document.querySelector('.fc-list-day-text');
-                                    focusTarget?.setAttribute('tabindex', '0');
-                                    focusTarget?.focus();
-                                }, 100);
-                            }
-                        })
+                        info = piecalJS.dayCellDidMount( info );
 
                         <?php do_action( 'piecal_additional_day_cell_did_mount_js' ); ?>
                     },
                     dayHeaderContent: function( info ) {
-                        let overriddenDayHeaderViews = ['dayGridMonth', 'timeGridWeek', 'dayGridWeek'];
-
-                        if( overriddenDayHeaderViews.includes(info.view.type) ) {
-                            return '';
-                        }
+                        info = piecalJS.dayHeaderContent( info );
 
                         <?php do_action( 'piecal_additional_day_header_content_js' ); ?>
 
                         return info.text;
                     },
                     dayHeaderDidMount: function( info ) {
-                        let dayHeaderLink = info.el.querySelector('a');
-
-                        let fullDayName = piecalUtils.getShortenedDayNames(info.text, 'full');
-                        let shortDayName = piecalUtils.getShortenedDayNames(info.text, 'short');
-                        let singleLetterDayName = piecalUtils.getShortenedDayNames(info.text, 'single');
-
-                        let shortenableViews = ['dayGridMonth', 'timeGridWeek', 'dayGridWeek'];
-
-                        if( shortenableViews.includes(info.view.type) ) {
-                            dayHeaderLink.innerHTML = `<span class="piecal-grid-day-header-text piecal-grid-day-header-text--full">${fullDayName}</span>
-                                                       <span class="piecal-grid-day-header-text piecal-grid-day-header-text--short">${shortDayName}</span>
-                                                       <span class="piecal-grid-day-header-text piecal-grid-day-header-text--single-letter">${singleLetterDayName}</span>`;
-                        }
+                        info = piecalJS.dayHeaderDidMount( info );
 
                         <?php do_action( 'piecal_additional_day_header_did_mount_js' ); ?>
                     },
@@ -407,11 +334,29 @@ if ( ! function_exists( 'piecal_render_calendar' ) ) {
             });
 
             function piecalChangeView( view ) {
+                piecalCleanView( document.querySelector('.piecal-wrapper').getAttribute('data-view'), view );
                 document.querySelector('.piecal-wrapper').setAttribute('data-view', view);
                 window.calendar.changeView(view);
                 Alpine.store('calendarEngine').calendarView = view;
                 Alpine.store('calendarEngine').viewTitle = window.calendar.currentData.viewTitle;
                 Alpine.store('calendarEngine').viewSpec = window.calendar.currentData.viewSpec.buttonTextDefault;
+            }
+
+            // This function forces the calendar to re-render events when the view is changed, but only
+            // when necessary. This prevents artifacts from custom views from persisting between view changes
+            // when those views have the same or similar types, e.g. listMonth and listUpcoming.
+            function piecalCleanView( oldView, newView ) {
+                if( oldView.toLowerCase().includes( 'list' ) && newView.toLowerCase().includes( 'grid' ) ) {
+                    return false;
+                }
+
+                if( oldView.toLowerCase().includes( 'list' ) && newView.toLowerCase().includes( 'list' ) ) {
+                    window.calendar.changeView('dayGridMonth');
+                }
+
+                if( oldView.toLowerCase().includes( 'grid' ) && newView.toLowerCase().includes( 'grid' ) ) {
+                    window.calendar.changeView('listMonth');
+                }
             }
 
             function piecalGotoToday() {
@@ -505,42 +450,11 @@ if ( ! function_exists( 'piecal_render_calendar' ) ) {
                     _e('Choose View', 'piecal')
                     ?>
                     <select x-model="$store.calendarEngine.calendarView" @change="piecalChangeView($store.calendarEngine.calendarView)">
-                        <option value="dayGridMonth">
-                            <?php 
-                                /* Translators: String for Month - Classic view in view picker dropdown. */
-                                _e( 'Month - Classic', 'piecal' ); 
-                            ?>
-                        </option>
-                        <option value="listMonth">
-                            <?php 
-                                /* Translators: String for Month - List view in view picker dropdown. */
-                                _e( 'Month - List', 'piecal' ); 
-                            ?>
-                        </option>
-                        <option value="timeGridWeek">
-                            <?php 
-                                /* Translators: String for Week - Time Grid view in view picker dropdown. */
-                                _e( 'Week - Time Grid', 'piecal' ); 
-                            ?>
-                        </option>
-                        <option value="listWeek">
-                            <?php 
-                                /* Translators: String for Week - List view in view picker dropdown. */
-                                _e( 'Week - List', 'piecal' ); 
-                            ?>
-                        </option>
-                        <option value="dayGridWeek">
-                            <?php 
-                                /* Translators: String for Week - Classic view in view picker dropdown. */
-                                _e( 'Week - Classic', 'piecal' ); 
-                            ?>
-                        </option>
-                        <option value="listDay">
-                            <?php 
-                                /* Translators: String for Day - Classic view in view picker dropdown. */
-                                _e( 'Day', 'piecal' ); 
-                            ?>
-                        </option>
+                        <?php foreach( $allowedViews as $view ) { ?>
+                            <option value="<?php echo $view; ?>">
+                                <?php echo $viewLabels[$view]; ?>
+                            </option>
+                        <?php } ?>
                     </select>
                 </label>
                 <div class="piecal-controls__navigation-button-group">

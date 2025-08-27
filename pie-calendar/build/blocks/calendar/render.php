@@ -17,6 +17,7 @@ $atts = array(
 	'operator'          => $attributes['operator'] ?? null,
 	'automaticenddates' => $attributes['automaticenddates'],
 	'featuredimage'     => $attributes['featuredimage'] ? 'true' : 'false',
+	'duration'          => $attributes['duration'] ?? 1,
 	'hidepastevents'    => $attributes['hidepastevents'] ? 'true' : 'false',
 );
 

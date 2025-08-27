@@ -22,12 +22,14 @@ import {
   SelectControl,
   CheckboxControl,
   FormTokenField,
+  TextControl,
 } from "@wordpress/components";
 import { useEntityRecords } from "@wordpress/core-data";
 import { useState, useEffect, useRef } from "@wordpress/element";
 import apiFetch from "@wordpress/api-fetch";
 import { addQueryArgs } from "@wordpress/url";
 import { SUPPORTED_LOCALES } from "./locales";
+import { addFilter, applyFilters } from "@wordpress/hooks";
 /**
  * Import the full calendar library.
  */
@@ -52,6 +54,9 @@ function Calendar({ attributes, events }) {
   const calendarRef = useRef(null);
   const defaultView = "dayGridMonth";
   const [viewTitle, setViewTitle] = useState('');
+  const [views, setViews] = useState([]);
+  const [viewsLoaded, setViewsLoaded] = useState(false); // Add loading state
+  const [duration, setDuration] = useState(1);
 
   useEffect(() => {
     if (calendarRef.current) {
@@ -61,11 +66,55 @@ function Calendar({ attributes, events }) {
     }
   }, [attributes.view, attributes.wraptitles]);
 
+  useEffect(() => {
+    apiFetch({
+      path: addQueryArgs("piecal/v1/views_array", { duration: attributes.duration } ),
+      method: "GET",
+    }).then((views) => {
+        let supportedEventHandlers = [
+          'eventDataTransform',
+          'dateClick',
+          'eventClick', 
+          'eventDidMount', 
+          'dayCellDidMount', 
+          'viewDidMount', 
+          'viewWillUnmount',
+          'dayHeaderContent',
+          'dayHeaderDidMount'
+      ];
+
+      for( let view in views ) {
+          let viewProps = views[view];
+
+          for( let prop in viewProps ) {
+              if( supportedEventHandlers.includes( prop ) ) {
+                  let eventHandlerCode = viewProps[prop];
+
+                  let handlerFunction = new Function( 'info', eventHandlerCode );
+
+                  viewProps[prop] = handlerFunction;
+              }
+          }
+
+          // Remove customProps since we don't want those output inside the calendar object
+          delete viewProps.customProps;
+      }
+
+      setViews(views);
+      setViewsLoaded(true); // Mark views as loaded
+    });
+  }, [attributes.duration]);
+
   const updateTitle = () => {
     if (calendarRef.current) {
       setViewTitle(calendarRef.current.getApi().view.title);
     }
   };
+
+  // Don't render FullCalendar until views are loaded
+  if (!viewsLoaded) {
+    return <div>Loading calendar...</div>;
+  }
 
   return (
     <>
@@ -124,11 +173,13 @@ function Calendar({ attributes, events }) {
         </div>
       </div>
       <style data-fullcalendar></style>
+      <div className="piecal-blockeditor-container" style={{width: '100%'}} data-view={attributes.view}>
       <FullCalendar
         ref={calendarRef}
         plugins={[dayGridPlugin, timeGridPlugin, listPlugin]}
         initialView={attributes.view || defaultView}
         editable={false}
+        views={viewsLoaded ? views : []}
         events={events}
         contentHeight="auto"
         locale={attributes.locale}
@@ -137,6 +188,7 @@ function Calendar({ attributes, events }) {
           start: new Date()
         } : undefined}
       />
+      </div>
     </>
   );
 }
@@ -158,6 +210,12 @@ export default function Edit({ attributes, setAttributes }) {
 
   // Add this new state for managing suggestions
   const [suggestions, setSuggestions] = useState([]);
+
+  // Add new state for managing views
+  const [views, setViews] = useState([]);
+
+  // Add new state for managing view array
+  const [viewsArray, setViewsArray] = useState([]);
 
   const blockWrapperClass = "piecal-wrapper";
 
@@ -229,6 +287,24 @@ export default function Edit({ attributes, setAttributes }) {
     }
   }, [postTypehasResolved]);
 
+  useEffect(() => {
+    apiFetch({
+      path: addQueryArgs("piecal/v1/views"),
+      method: "GET",
+    }).then((views) => {
+      setViews(views);
+    });
+  }, []); // Add empty dependency array to run only once on mount
+
+  useEffect(() => {
+    apiFetch({
+      path: addQueryArgs("piecal/v1/views_array"),
+      method: "GET",
+    }).then((viewsArray) => {
+      setViewsArray(viewsArray);
+    });
+  }, []); // Add empty dependency array to run only once on mount
+
   return (
     <div {...useBlockProps({ className: wrapperClass })}>
       <InspectorControls>
@@ -274,24 +350,35 @@ export default function Edit({ attributes, setAttributes }) {
                 "Choose the default calendar view that visitors will see when the page loads.",
                 "piecal"
               )}
-              options={[
-                { label: __("Default", "piecal"), value: "" },
-                {
-                  label: __("Month - Classic", "piecal"),
-                  value: "dayGridMonth",
-                },
-                { label: __("Month - List", "piecal"), value: "listMonth" },
-                {
-                  label: __("Week - Time Grid", "piecal"),
-                  value: "timeGridWeek",
-                },
-                { label: __("Week - List", "piecal"), value: "listWeek" },
-                { label: __("Week - Classic", "piecal"), value: "dayGridWeek" },
-                { label: __("Day", "piecal"), value: "listDay" },
-              ]}
+              options={views}
               onChange={(view) => setAttributes({ view })}
             />
           </PanelRow>
+          {( viewsArray[attributes.view] && viewsArray[attributes.view].duration ) && ( // Next check if attributes.view in the views Array has a duration property before showing
+            <PanelRow>
+              <TextControl
+                label={__("Duration", "piecal")}
+                value={attributes.duration ?? 1}
+                help={__(
+                  "Choose the number of months the calendar view should span, starting from beginning of current month. Minimum of 1, maximum of 24.",
+                  "piecal"
+                )}
+                min={1}
+                onChange={(duration) => {
+                  if( parseInt(duration) < 1 || duration == "" ) {
+                    setAttributes({ duration: 1 });
+                    return;
+                  }
+                  if( parseInt(duration) > 24 ) {
+                    setAttributes({ duration: 24 });
+                    return;
+                  }
+                  setAttributes({ duration: parseInt(duration) ?? 1 }) }
+                }
+                type={"number"}
+              />
+            </PanelRow>
+          )}
           {(attributes.view === "" || attributes.view === "dayGridMonth") && (
             <PanelRow>
               <SelectControl

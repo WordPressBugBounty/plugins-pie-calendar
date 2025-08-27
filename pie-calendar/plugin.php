@@ -9,7 +9,7 @@
  * Plugin Name:       Pie Calendar
  * Plugin URI:        https://piecalendar.com
  * Description:       Turn any post type into a calendar event and display it on a calendar.
- * Version:           1.2.8
+ * Version:           1.2.9
  * Author:            Elijah Mills & Jonathan Jernigan
  * Author URI:        https://piecalendar.com/about
  * License:           GPL-2.0+
@@ -25,7 +25,7 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-define( 'PIECAL_VERSION', '1.2.8' );
+define( 'PIECAL_VERSION', '1.2.9' );
 define( 'PIECAL_PATH', plugin_dir_url( __FILE__ ) );
 define( 'PIECAL_DIR', plugin_dir_path( __FILE__ ) );
 
@@ -49,6 +49,7 @@ function piecal_register_scripts_and_styles() {
 		'fullcalendar',
 		'fullcalendar-locales',
 		'piecal-utils',
+		'piecalJS',
 		'piecalCSS',
 		'piecalThemeDarkCSS',
 		'piecalThemeDarkCSSAdaptive',
@@ -180,6 +181,13 @@ add_action(
 			PIECAL_VERSION,
 			false
 		);
+
+		// Register piecalJS if not already registered. We need this in the block editor environment.
+		if ( ! wp_script_is( 'piecalJS', 'registered' ) ) {
+			wp_register_script( 'piecalJS', PIECAL_PATH . 'includes/js/piecal.js', array( 'wp-i18n' ), PIECAL_VERSION );
+		}
+				
+		wp_enqueue_script('piecalJS');
 	}
 );
 
@@ -259,17 +267,11 @@ add_action( 'init', 'piecal_load_textdomain' );
 
 /**
  * Set script translations
- * This doesn't work yet.
  */
-// add_action( 'wp_enqueue_scripts', 'piecal_load_js_translations', 100 );
-
-// function piecal_load_js_translations() {
-// wp_set_script_translations(
-// 'piecalendar-custom-meta-plugin',
-// 'piecal',
-// plugin_dir_path( __FILE__ ) . 'languages'
-// );
-// }
+function piecal_set_script_translations() {
+	wp_set_script_translations( 'piecalJS', 'piecal', plugin_dir_path( __FILE__ ) . 'languages' );
+}
+add_action( 'wp_enqueue_scripts', 'piecal_set_script_translations', 20 );
 
 /**
  * Get offset in seconds by a given date. This is used to detect DST and output the proper offset.
@@ -321,3 +323,9 @@ function piecal_site_gmt_offset( $offset = null ) {
 
 	return $gmt_final_offset;
 }
+
+// Custom views API
+require_once PIECAL_DIR . '/includes/utils/Views.php';
+add_action( 'init', function() {
+	Piecal\Utils\Views::addCustomViews( [], [] );
+});

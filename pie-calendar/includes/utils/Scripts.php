@@ -4,7 +4,7 @@ namespace Piecal\Utils;
 
 class Scripts {
     public static function loadCoreScriptsAndStyles() {
-        self::enqueueBundle( ['alpinefocus', 'alpinejs', 'fullcalendar', 'piecal-utils', 'piecalCSS'] );
+        self::enqueueBundle( ['alpinefocus', 'alpinejs', 'fullcalendar', 'piecal-utils', 'piecalJS', 'piecalCSS'] );
     }
     
     public static function enqueueBundle( $bundle = [], $vars = [] ) {
@@ -23,6 +23,9 @@ class Scripts {
                 break;
                 case 'piecal-utils':
                     wp_enqueue_script('piecal-utils');
+                break;
+                case 'piecalJS':
+                    wp_enqueue_script('piecalJS');
                 break;
                 case 'alpinejs':
                     wp_enqueue_script('alpinejs');
@@ -61,7 +64,7 @@ class Scripts {
         foreach( $bundle as $script ) {
             switch( $script ) {
                 case 'alpinejs':
-                    wp_register_script( 'alpinejs', PIECAL_PATH . 'vendor/alpine.3.11.1.js', ['alpinefocus'] );
+                    wp_register_script( 'alpinejs', PIECAL_PATH . 'vendor/alpine.3.11.1.min.js', ['alpinefocus'] );
                 break;
                 case 'alpinefocus':
                     wp_register_script( 'alpinefocus', PIECAL_PATH . 'vendor/alpine.focus.3.11.1.js' );
@@ -80,6 +83,9 @@ class Scripts {
                     wp_localize_script( 'piecal-utils', 'piecalVars', [
                         'useAdaptiveTimezones' => $useAdaptiveTimezones
                     ] );
+                break;
+                case 'piecalJS':
+                    wp_register_script( 'piecalJS', PIECAL_PATH . 'includes/js/piecal.js', array( 'wp-i18n' ), PIECAL_VERSION );
                 break;
                 case 'piecalCSS':
                     wp_register_style( 'piecalCSS', PIECAL_PATH . 'css/piecal.css', array(), PIECAL_VERSION );

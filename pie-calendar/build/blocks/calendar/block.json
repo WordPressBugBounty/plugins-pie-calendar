@@ -60,6 +60,10 @@
       "type": "boolean",
       "default": false
     },
+    "duration": {
+      "type": "number",
+      "default": 1
+    },
     "hidepastevents": {
       "type": "boolean",
       "default": false
