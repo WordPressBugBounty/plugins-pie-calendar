@@ -42,11 +42,11 @@ function render_piecal_info( $atts ) {
     $startDate = Piecal\Utils\Time::getStartDate();
     $endDate = Piecal\Utils\Time::getEndDate();
 
-    $start = $startDate ? date( $format, strtotime( $startDate ) ) : false;
-    $start_date_only = $startDate ? date( $format_date_only, strtotime( $startDate ) ) : false;
+    $start = $startDate ? date_i18n( $format, strtotime( $startDate ) ) : false;
+    $start_date_only = $startDate ? date_i18n( $format_date_only, strtotime( $startDate ) ) : false;
 
-    $end = $endDate ? date( $format, strtotime( $endDate ) ) : false;
-    $end_date_only = $endDate ? date( $format_date_only, strtotime( $endDate ) ) : false;
+    $end = $endDate ? date_i18n( $format, strtotime( $endDate ) ) : false;
+    $end_date_only = $endDate ? date_i18n( $format_date_only, strtotime( $endDate ) ) : false;
 
     $allday = get_post_meta( get_the_ID(), '_piecal_is_allday', true ) ?? false;
 

@@ -11,6 +11,8 @@ if ( ! function_exists( 'piecal_render_calendar' ) ) {
 		do_action( 'piecal_render_calendar', $atts );
         do_action( 'piecal_inline_styles' );
 
+        include_once PIECAL_DIR . '/includes/utils/General.php';
+
 		Piecal\Utils\Scripts::loadCoreScriptsAndStyles();
 
 		$atts = apply_filters( 'piecal_shortcode_atts', $atts );
@@ -120,7 +122,7 @@ if ( ! function_exists( 'piecal_render_calendar' ) ) {
                 "title" => str_replace("&amp;", "&", htmlentities(get_the_title(), ENT_QUOTES)),
                 "start" => $startDate,
                 "end" => $endDate ?? null,
-                "details" => str_replace("&amp;", "&", htmlentities(get_the_excerpt(), ENT_QUOTES) ),
+                "details" => Piecal\Utils\General::getExcerpt(),//str_replace("&amp;", "&", htmlentities(get_the_excerpt(), ENT_QUOTES) ),
                 "permalink" => get_permalink(),
                 "postType" => $postType->labels->singular_name ?? null,
                 "postId" => get_the_ID()
@@ -421,7 +423,7 @@ if ( ! function_exists( 'piecal_render_calendar' ) ) {
         </script>
         <div 
         class="<?php echo $wrapperClass; ?>" 
-        data-view="<?php echo $wrapperViewAttribute; ?>";
+        data-view="<?php echo esc_attr( $wrapperViewAttribute ); ?>";
         x-data
         >
             <div class="piecal-controls fc">

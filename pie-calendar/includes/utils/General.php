@@ -134,4 +134,29 @@ Class General {
 
         return true;
     }
+
+    public static function getExcerpt( $post = null, $allowHTML = false, $length = 200 ) {
+        if( $post == null ) {
+            $post = get_post();
+        }
+
+        if( $post == null ) {
+            return '';
+        }
+
+        $length = apply_filters( 'piecal_excerpt_length', $length );
+        $allowHTML = apply_filters( 'piecal_excerpt_allow_html', $allowHTML );
+
+        $excerpt = isset($post->post_excerpt) && $post->post_excerpt != '' ? $post->post_excerpt : get_the_content( $post->ID );
+
+        $excerpt = strip_shortcodes( $excerpt );
+
+        $excerpt = $allowHTML ? wp_kses_post( $excerpt ) : wp_strip_all_tags( $excerpt );
+
+        if( strlen( $excerpt ) > $length ) {
+            $excerpt = substr( $excerpt, 0, $length ) . '...';
+        }
+
+        return $excerpt;
+    }
 }

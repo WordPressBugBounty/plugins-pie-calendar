@@ -106,7 +106,7 @@ const Piecal_Gutenberg_Sidebar_Plugin = ( { postType, postMeta, setPostMeta } ) 
 					renderContent={ () => 
 						<div>
 							<DateTimePicker
-								currentDate={ postMeta._piecal_end_date }
+								currentDate={ postMeta._piecal_end_date != '' ? postMeta._piecal_end_date : postMeta._piecal_start_date }
 								label={ strings.End_Date || 'End Date' }
 								value={ postMeta._piecal_end_date }
 								onChange={ ( value ) => setPostMeta( { _piecal_end_date: value } ) }

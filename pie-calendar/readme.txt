@@ -3,9 +3,9 @@ Contributors: apexws, spellhammer
 Tags: events, calendar, event
 Donate link: https://piecalendar.com
 Requires at least: 5.9
-Tested up to: 6.8.2
+Tested up to: 6.8.3
 Requires PHP: 7.4
-Stable tag: 1.2.9
+Stable tag: 1.3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -88,6 +88,12 @@ Feel free to read our documentation for more detailed info: [docs.piecalendar.co
 1. default
 
 == Changelog ==
+
+= 1.3.0 =
+* New: Added more robust method for allowing HTML in popover details. See docs for more info.
+* Tweak: End date picker now defaults to same day as start date if defined.
+* Security: Fixed XSS vulnerability in output of $wrapperViewAttribute,
+* Tweak: Swapped to date_i18n() for date output in piecal-info.
 
 = 1.2.9 =
 * New: Custom views API. See our documentation for more information.
