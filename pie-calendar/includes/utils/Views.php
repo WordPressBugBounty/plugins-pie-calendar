@@ -58,7 +58,7 @@ class Views {
 
             foreach( $customViews as $view => $viewData ) {
                 if( isset( $viewData['customProps']['styles'] ) ) {
-                    echo '<style>' . $viewData['customProps']['styles'] . '</style>';
+                    echo '<style>' . wp_kses_post( $viewData['customProps']['styles'] ) . '</style>';
                 }
             }
         });

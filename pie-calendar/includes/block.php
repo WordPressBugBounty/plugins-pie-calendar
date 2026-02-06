@@ -27,7 +27,11 @@ add_action( 'init', 'piecal_register_block_type' );
  * @param array $atts The calendar block attributes.
  * @return array
  */
-function piecal_calendar_block_atts_filter( $atts ) {
+function piecal_calendar_block_atts_filter( $atts, $attributes ) {
+	if( empty( $atts ) ) {
+		return $atts;
+	};
+
 	foreach ( $atts as $key => $value ) {
 		if ( empty( $value ) ) {
 			unset( $atts[ $key ] );
@@ -35,7 +39,7 @@ function piecal_calendar_block_atts_filter( $atts ) {
 	}
 	return $atts;
 }
-add_filter( 'piecal_calendar_block_atts', 'piecal_calendar_block_atts_filter' );
+add_filter( 'piecal_calendar_block_atts', 'piecal_calendar_block_atts_filter', 10, 2 );
 
 
 /**
@@ -109,10 +113,11 @@ add_action( 'rest_api_init', 'piecal_register_rest_endpoints' );
 function piecal_get_events( $request ) {
 
 	// Check if request is from block editor
-	if (!isset($_SERVER['HTTP_REFERER']) || 
-        (strpos($_SERVER['HTTP_REFERER'], '/wp-admin/post.php') === false && 
-         strpos($_SERVER['HTTP_REFERER'], '/wp-admin/post-new.php') === false &&
-		 strpos($_SERVER['HTTP_REFERER'], '/wp-admin/site-editor.php') === false)) {
+	$referer = isset($_SERVER['HTTP_REFERER']) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_REFERER'] ) ) : '';
+	if (!$referer ||
+        (strpos($referer, '/wp-admin/post.php') === false &&
+         strpos($referer, '/wp-admin/post-new.php') === false &&
+		 strpos($referer, '/wp-admin/site-editor.php') === false)) {
         return new WP_Error('unauthorized', 'This endpoint is only available within the block editor', array('status' => 403));
     }
 
@@ -176,7 +181,21 @@ function piecal_get_events( $request ) {
 
 	$events = apply_filters( 'piecal_events_array_filter', $events, null, null, ( ! isset( $atts['allAttributes']['adaptivetimezone'] ) && apply_filters( 'piecal_use_adaptive_timezones', false ) ) );
 
-	return rest_ensure_response( $events );
+	$eventSources = [
+        $events
+    ];
+
+	foreach( $atts['allAttributes']['sources'] as $key => $value ) {
+		if( !$value || $value == 'false' ) {
+			unset( $atts['allAttributes']['sources'][$key] );
+		}	
+	}
+
+	$atts['allAttributes']['sources'] = array_keys( $atts['allAttributes']['sources'] );
+
+    $eventSources = apply_filters('piecal_event_sources', $eventSources, null, null, ( ! isset( $atts['allAttributes']['adaptivetimezone'] ) && apply_filters( 'piecal_use_adaptive_timezones', false ) ), $atts['allAttributes']);
+
+	return rest_ensure_response( $eventSources );
 }
 
 function piecal_get_views( $request ) {
@@ -234,11 +253,13 @@ function piecal_get_views( $request ) {
 }
 
 function piecal_get_views_array() {
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- This is a read-only operation for public-facing content
+	$get_duration = isset( $_GET['duration'] ) ? intval( sanitize_text_field( wp_unslash( $_GET['duration'] ) ) ) : 2;
 	$customViews = [
         "listUpcoming" => [
             "type" => "listMonth",
             "duration" => [
-                "months" => isset( $_GET['duration'] ) ? intval( $_GET['duration'] ) : 2
+                "months" => $get_duration
             ],
             "customProps" => [
                 /* Translators: String for Upcoming view in view picker dropdown. */
@@ -247,7 +268,7 @@ function piecal_get_views_array() {
         ]
     ];
 
-	$atts['duration'] = isset( $_GET['duration'] ) ? intval( $_GET['duration'] ) : 2;
+	$atts['duration'] = $get_duration;
 	$atts['duration'] = $atts['duration'] > 24 ? 24 : $atts['duration'];
 	$atts['duration'] = $atts['duration'] < 1 ? 1 : $atts['duration'];
 

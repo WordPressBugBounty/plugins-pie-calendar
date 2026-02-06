@@ -111,11 +111,27 @@ class Time {
 
     // Helper function to get start date from pass-through (URL) or meta key depending on what's available.
     public static function getStartDate() {
-        $timezoneObj = new DateTimeZone( $_GET['timezone'] ?? wp_timezone_string() );
+        $tz_string = isset( $_GET['timezone'] ) ? sanitize_text_field( wp_unslash( $_GET['timezone'] ) ) : wp_timezone_string();
+
+        if( in_array( $tz_string, timezone_identifiers_list(), true ) ) {
+            try {
+                $timezoneObj = new DateTimeZone( $tz_string );
+            } catch( Exception $e ) {
+                $timezoneObj = new DateTimeZone( wp_timezone_string() ?: 'UTC' );
+            }
+        } else {
+            $timezoneObj = new DateTimeZone( wp_timezone_string() ?: 'UTC' );
+        }
+        
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- This is a read-only operation for public-facing content
+        $get_timezone = isset( $_GET['timezone'] ) ? sanitize_text_field( wp_unslash( $_GET['timezone'] ) ) : wp_timezone_string();
+        $timezoneObj = new DateTimeZone( $get_timezone );
         $startDate = null;
 
-        if ( isset( $_GET['eventstart'] ) && is_numeric( $_GET['eventstart'] ) && $timezoneObj ) {
-            $startDate = sanitize_text_field( $_GET['eventstart'] );
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- This is a read-only operation for public-facing content
+        $get_eventstart = isset( $_GET['eventstart'] ) ? sanitize_text_field( wp_unslash( $_GET['eventstart'] ) ) : null;
+        if ( isset( $get_eventstart ) && is_numeric( $get_eventstart ) && $timezoneObj ) {
+            $startDate = $get_eventstart;
             
             if ( $date = new DateTime( '@' . $startDate ) ) {
                 $date->setTimezone( $timezoneObj );
@@ -130,11 +146,27 @@ class Time {
 
     // Helper function to get end date from pass-through (URL) or meta key depending on what's available.
     public static function getEndDate() {
-        $timezoneObj = new DateTimeZone( $_GET['timezone'] ?? wp_timezone_string() );
+        $tz_string = isset( $_GET['timezone'] ) ? sanitize_text_field( wp_unslash( $_GET['timezone'] ) ) : wp_timezone_string();
+
+        if( in_array( $tz_string, timezone_identifiers_list(), true ) ) {
+            try {
+                $timezoneObj = new DateTimeZone( $tz_string );
+            } catch( Exception $e ) {
+                $timezoneObj = new DateTimeZone( wp_timezone_string() ?: 'UTC' );
+            }
+        } else {
+            $timezoneObj = new DateTimeZone( wp_timezone_string() ?: 'UTC' );
+        }
+        
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- This is a read-only operation for public-facing content
+        $get_timezone = isset( $_GET['timezone'] ) ? sanitize_text_field( wp_unslash( $_GET['timezone'] ) ) : wp_timezone_string();
+        $timezoneObj = new DateTimeZone( $get_timezone );
         $endDate = null;
 
-        if ( isset( $_GET['eventend'] ) && is_numeric( $_GET['eventend'] ) && $_GET['eventend'] != 0 && $timezoneObj ) {
-            $endDate = sanitize_text_field( $_GET['eventend'] );
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- This is a read-only operation for public-facing content
+        $get_eventend = isset( $_GET['eventend'] ) ? sanitize_text_field( wp_unslash( $_GET['eventend'] ) ) : null;
+        if ( isset( $get_eventend ) && is_numeric( $get_eventend ) && $get_eventend != 0 && $timezoneObj ) {
+            $endDate = $get_eventend;
             
             if ( $date = new DateTime( '@' . $endDate ) ) {
                 $date->setTimezone( $timezoneObj );

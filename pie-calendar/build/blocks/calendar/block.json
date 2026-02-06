@@ -67,6 +67,10 @@
     "hidepastevents": {
       "type": "boolean",
       "default": false
+    },
+    "sources": {
+      "type": "string",
+      "default": ""
     }
   },
   "textdomain": "piecal",

@@ -16,7 +16,7 @@ Class General {
     public static function pretty( $value, $context = 'pretty() util function' ) {
         ?>
         <div style="padding: 32px; background: #EFEFEF; border-radius: 8px">
-            <p>Data from <?php echo $context; ?></p>
+            <p>Data from <?php echo esc_html( $context ); ?></p>
             <hr>
             <pre style="max-height: 100vh; overflow: auto">
                 <?php var_dump( $value ); ?>
@@ -154,7 +154,7 @@ Class General {
         $excerpt = $allowHTML ? wp_kses_post( $excerpt ) : wp_strip_all_tags( $excerpt );
 
         if( strlen( $excerpt ) > $length ) {
-            $excerpt = substr( $excerpt, 0, $length ) . '...';
+            $excerpt = mb_substr( $excerpt, 0, $length ) . '...';
         }
 
         return $excerpt;

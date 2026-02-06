@@ -140,7 +140,19 @@ if ( ! function_exists( 'piecal_render_calendar' ) ) {
             }
         }
 
-    $eventsArray = apply_filters('piecal_events_array_filter', $eventsArray, $rangeStart = null, $rangeEnd = null, $appendOffset);
+    $eventsArray = apply_filters('piecal_events_array_filter', $eventsArray, $rangeStart = null, $rangeEnd = null, $appendOffset, $atts);
+
+    $eventSources = [
+        $eventsArray
+    ];
+
+    $eventSources = apply_filters('piecal_event_sources', $eventSources, $rangeStart = null, $rangeEnd = null, $appendOffset, $atts);
+
+    $eventSources = [
+        $eventsArray
+    ];
+
+    $eventSources = apply_filters('piecal_event_sources', $eventSources, $rangeStart = null, $rangeEnd = null, $appendOffset, $atts);
 
     remove_filter('excerpt_more', 'piecal_replace_read_more', 99);
 
@@ -226,8 +238,8 @@ if ( ! function_exists( 'piecal_render_calendar' ) ) {
     ?>
     <script>
             let piecalAJAX = {
-            ajaxURL: "<?php echo admin_url('admin-ajax.php'); ?>",
-            ajaxNonce: "<?php echo wp_create_nonce('piecal_ajax_nonce'); ?>"
+            ajaxURL: "<?php echo esc_url( admin_url('admin-ajax.php') ); ?>",
+            ajaxNonce: "<?php echo esc_js( wp_create_nonce('piecal_ajax_nonce') ); ?>"
             }
 
             let alreadyExpandedOccurrences = [];
@@ -279,7 +291,7 @@ if ( ! function_exists( 'piecal_render_calendar' ) ) {
                     headerToolbar: false,
                     initialView: "<?php echo esc_attr( $initialView ); ?>",
                     editable: false,
-                    events: <?php echo json_encode($eventsArray); ?>,
+                    eventSources: <?php echo json_encode($eventSources); ?>,
                     direction: "<?php echo is_rtl() ? 'rtl' : 'ltr'; ?>",
                     contentHeight: "auto",
                     locale: "<?php echo esc_attr( $locale ); ?>",
@@ -327,7 +339,7 @@ if ( ! function_exists( 'piecal_render_calendar' ) ) {
 
                         <?php do_action( 'piecal_additional_day_header_did_mount_js' ); ?>
                     },
-                    <?php 
+                    <?php
                     foreach( $customCalendarProps as $prop ) echo $prop;
                     ?>
                 });
@@ -421,8 +433,8 @@ if ( ! function_exists( 'piecal_render_calendar' ) ) {
 
             })
         </script>
-        <div 
-        class="<?php echo $wrapperClass; ?>" 
+        <div
+        class="<?php echo esc_attr( $wrapperClass ); ?>"
         data-view="<?php echo esc_attr( $wrapperViewAttribute ); ?>";
         x-data
         >
@@ -430,7 +442,7 @@ if ( ! function_exists( 'piecal_render_calendar' ) ) {
                 <button
                     class="piecal-controls__skip-calendar fc-button fc-button-primary"
                     onClick="piecalSkipCalendar()">
-                        <?php _e('Skip Calendar', 'piecal'); ?>
+                        <?php esc_html_e('Skip Calendar', 'piecal'); ?>
                 </button>
                 <div
                 class="piecal-controls__view-title" 
@@ -442,19 +454,19 @@ if ( ! function_exists( 'piecal_render_calendar' ) ) {
                 </div>
                 <button 
                     class="piecal-controls__back-to-month fc-button fc-button-primary"
-                    aria-label="<?php _e( 'Back to full month view.', 'piecal' ); ?>"
+                    aria-label="<?php esc_attr_e( 'Back to full month view.', 'piecal' ); ?>"
                     onClick="piecalChangeView('dayGridMonth')">
-                        <?php _e('Back To Full Month', 'piecal'); ?>
+                        <?php esc_html_e('Back To Full Month', 'piecal'); ?>
                 </button>
                 <label class="piecal-controls__view-chooser">
                     <?php
                     /* Translators: Label for calendar view chooser. */
-                    _e('Choose View', 'piecal')
+                    esc_html_e('Choose View', 'piecal')
                     ?>
                     <select x-model="$store.calendarEngine.calendarView" @change="piecalChangeView($store.calendarEngine.calendarView)">
                         <?php foreach( $allowedViews as $view ) { ?>
-                            <option value="<?php echo $view; ?>">
-                                <?php echo $viewLabels[$view]; ?>
+                            <option value="<?php echo esc_attr( $view ); ?>">
+                                <?php echo esc_html( $viewLabels[$view] ); ?>
                             </option>
                         <?php } ?>
                     </select>
@@ -491,7 +503,7 @@ if ( ! function_exists( 'piecal_render_calendar' ) ) {
                         class="piecal-popover__close-button" 
                         title="<?php
                         /* Translators: Label for close button in Pie Calendar popover. */
-                        _e( 'Close event details', 'piecal' )
+                        esc_attr_e( 'Close event details', 'piecal' )
                         ?>"
                         @click="$store.calendarEngine.showPopover = false">
                         </button>
@@ -504,7 +516,7 @@ if ( ! function_exists( 'piecal_render_calendar' ) ) {
                             <p>
                             <?php
                             /* Translators: Label for event start date in Pie Calendar popover. */
-                            _e('Starts', 'piecal')
+                            esc_html_e('Starts', 'piecal')
                             ?>
                             </p>
                             <p 
@@ -513,7 +525,7 @@ if ( ! function_exists( 'piecal_render_calendar' ) ) {
                             <p x-show="$store.calendarEngine.eventEnd">
                             <?php
                             /* Translators: Label for event end date in Pie Calendar popover. */
-                            _e('Ends', 'piecal')
+                            esc_html_e('Ends', 'piecal')
                             ?>
                             </p>
                             <p 
@@ -523,16 +535,16 @@ if ( ! function_exists( 'piecal_render_calendar' ) ) {
                         </div>
                         <hr>
                         <?php do_action('piecal_popover_before_details', $atts); ?>
-                        <?php echo apply_filters('piecal_popover_details', '<p class="piecal-popover__details" id="piecal-popover__details--01" x-text="$store.calendarEngine.safeOutput( $store.calendarEngine.eventDetails )"></p>'); ?>
+                        <?php echo apply_filters('piecal_popover_details', '<p x-show="$store.calendarEngine.eventDetails" class="piecal-popover__details" id="piecal-popover__details--01" x-text="$store.calendarEngine.safeOutput( $store.calendarEngine.eventDetails )"></p>'); ?>
                         <?php do_action('piecal_popover_after_details', $atts); ?>
                         <?php do_action('piecal_popover_before_view_link', $atts); ?>
-                        <a class="piecal-popover__view-link" :href="<?php echo apply_filters( 'piecal_popover_link_url', '$store.calendarEngine.eventUrl' ); ?>">
+                        <a x-show="$store.calendarEngine.eventUrl" class="piecal-popover__view-link" :href="<?php echo esc_attr( apply_filters( 'piecal_popover_link_url', '$store.calendarEngine.eventUrl' ) ); ?>">
                         <?php
                         $filtered_popover_link = apply_filters( 'piecal_popover_link_text', null );
 
                         if( $filtered_popover_link == null ) {
                         /* Translators: Label for "View <Post Type>" in Pie Calendar popover. */
-                            _e('View ', 'piecal');
+                            esc_html_e('View ', 'piecal');
                             ?>
                             <span x-text="$store.calendarEngine.eventType"></span>
                             <?php
@@ -542,7 +554,7 @@ if ( ! function_exists( 'piecal_render_calendar' ) ) {
                         ?>
                         </a>
                         <?php
-                        echo apply_filters('piecal_popover_after_view_link', null);
+                        echo wp_kses_post( apply_filters('piecal_popover_after_view_link', null) );
                         ?>
                     </div>
             </div>

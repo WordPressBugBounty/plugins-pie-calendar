@@ -81,7 +81,9 @@ class Scripts {
                     $useAdaptiveTimezones = apply_filters('piecal_use_adaptive_timezones', false);
 
                     wp_localize_script( 'piecal-utils', 'piecalVars', [
-                        'useAdaptiveTimezones' => $useAdaptiveTimezones
+                        'useAdaptiveTimezones' => $useAdaptiveTimezones,
+                        'siteTimezoneString' => wp_timezone_string(),
+                        'siteGMTOffset' => piecal_site_gmt_offset()
                     ] );
                 break;
                 case 'piecalJS':

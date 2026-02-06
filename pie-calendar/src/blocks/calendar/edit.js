@@ -38,6 +38,7 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import listPlugin from "@fullcalendar/list";
+import icalendarPlugin from "@fullcalendar/icalendar";
 
 /**
  * Lets webpack process CSS, SASS or SCSS files referenced in JavaScript files.
@@ -176,11 +177,11 @@ function Calendar({ attributes, events }) {
       <div className="piecal-blockeditor-container" style={{width: '100%'}} data-view={attributes.view}>
       <FullCalendar
         ref={calendarRef}
-        plugins={[dayGridPlugin, timeGridPlugin, listPlugin]}
+        plugins={[dayGridPlugin, timeGridPlugin, listPlugin, icalendarPlugin]}
         initialView={attributes.view || defaultView}
         editable={false}
         views={viewsLoaded ? views : []}
-        events={events}
+        eventSources={events} // @TODO: events needs to be an array, e.g. [events, additionalsources, etc]
         contentHeight="auto"
         locale={attributes.locale}
         headerToolbar={false}

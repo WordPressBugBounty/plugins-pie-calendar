@@ -9,7 +9,7 @@
  * Plugin Name:       Pie Calendar
  * Plugin URI:        https://piecalendar.com
  * Description:       Turn any post type into a calendar event and display it on a calendar.
- * Version:           1.3.0
+ * Version:           1.3.0.4
  * Author:            Elijah Mills & Jonathan Jernigan
  * Author URI:        https://piecalendar.com/about
  * License:           GPL-2.0+
@@ -25,7 +25,7 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-define( 'PIECAL_VERSION', '1.3.0' );
+define( 'PIECAL_VERSION', '1.3.0.4' );
 define( 'PIECAL_PATH', plugin_dir_url( __FILE__ ) );
 define( 'PIECAL_DIR', plugin_dir_path( __FILE__ ) );
 
@@ -132,7 +132,7 @@ function piecal_register_post_meta() {
 }
 
 function piecal_admin_notice() {
-	if ( isset( $_GET['piecal-dismiss-notice'] ) ) {
+	if ( isset( $_GET['piecal-dismiss-notice'] ) && isset( $_GET['_wpnonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'piecal_dismiss_notice' ) ) {
 		update_option( 'piecal_hide_onboarding_notice', true );
 		return;
 	}
@@ -143,25 +143,53 @@ function piecal_admin_notice() {
 
 	?>
 	<div class="notice notice-success">
-	<p>
-	<?php
-	_e(
-		"<p>Pie Calendar has been activated.</p> 
-				<details>
-					<summary>Quick Start Guide</summary>
-					<ul>
-						<li><strong>Step 1:</strong> Edit any post, page, or custom post type and enable the <strong>Show on Calendar</strong> toggle.</li>
-						<li><strong>Step 2:</strong> Set a start date and time.</li>
-						<li><strong>Step 3:</strong> Add the <code>[piecal]</code> shortcode wherever you want to display your calendar.</li>
-					</ul>
-					<p>That's it! Check out <a href='https://www.youtube.com/watch?v=ncdab1v_B1M'>this video</a> to learn how get started in <strong>under 4 minutes.</strong></p>
-					<p>Or <a href='https://docs.piecalendar.com/'>click here</a> to view our extensive documentation.</p>
-				</details>
-				<p><a href='?piecal-dismiss-notice=true'>Dismiss this notice.</a></p>",
-		'piecal'
-	);
-	?>
-	</p>
+		<p>
+			<?php /* translators: Pie Calendar activation message */ ?>
+			<?php esc_html_e( 'Pie Calendar has been activated.', 'piecal' ); ?>
+		</p>
+		<details>
+			<summary>
+				<?php /* translators: Quick start guide title */ ?>
+				<?php esc_html_e( 'Quick Start Guide', 'piecal' ); ?>
+			</summary>
+			<ul>
+				<li>
+					<?php /* translators: Step 1 of the quick start guide */ ?>
+					<strong><?php esc_html_e( 'Step 1:', 'piecal' ); ?></strong> <?php echo wp_kses( __( 'Edit any post, page, or custom post type and enable the <strong>Show on Calendar</strong> toggle.', 'piecal' ), array( 'strong' => array() ) ); ?>
+				</li>
+				<li>
+					<?php /* translators: Step 2 of the quick start guide */ ?>
+					<strong><?php esc_html_e( 'Step 2:', 'piecal' ); ?></strong> <?php esc_html_e( 'Set a start date and time.', 'piecal' ); ?>
+				</li>
+				<li>
+					<?php /* translators: Step 3 of the quick start guide */ ?>
+					<strong><?php esc_html_e( 'Step 3:', 'piecal' ); ?></strong> <?php echo wp_kses( __( 'Add the <code>[piecal]</code> shortcode wherever you want to display your calendar.', 'piecal' ), array( 'code' => array() ) ); ?>
+				</li>
+			</ul>
+			<p>
+				<?php /* translators: Encouragement to watch the get started video. %s: link to the video */ ?>
+				<?php printf(
+					wp_kses(
+						__( "That's it! Check out %s to learn how get started in <strong>under 4 minutes.</strong>", 'piecal' ),
+						array( 'strong' => array() )
+					),
+					'<a href="https://www.youtube.com/watch?v=ncdab1v_B1M">' . esc_html__( 'this video', 'piecal' ) . '</a>'
+				); ?>
+			</p>
+			<p>
+				<?php /* translators: Link to documentation. %s: link to documentation */ ?>
+				<?php printf(
+					esc_html__( 'Or %s to view our extensive documentation.', 'piecal' ),
+					'<a href="https://docs.piecalendar.com/">' . esc_html__( 'click here', 'piecal' ) . '</a>'
+				); ?>
+			</p>
+		</details>
+		<p>
+			<a href="<?php echo esc_url( wp_nonce_url( '?piecal-dismiss-notice=true', 'piecal_dismiss_notice' ) ); ?>">
+				<?php /* translators: Dismiss notice link text */ ?>
+				<?php esc_html_e( 'Dismiss this notice.', 'piecal' ); ?>
+			</a>
+		</p>
 	</div>
 	<?php
 }

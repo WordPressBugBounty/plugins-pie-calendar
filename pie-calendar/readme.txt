@@ -1,18 +1,18 @@
-=== WordPress Events Calendar Plugin – Pie Calendar ===
+=== Pie Calendar - Events Calendar Made Simple ===
 Contributors: apexws, spellhammer
 Tags: events, calendar, event
 Donate link: https://piecalendar.com
 Requires at least: 5.9
-Tested up to: 6.8.3
+Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.3.0
+Stable tag: 1.3.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Easily display WordPress posts as events on a flexible front-end calendar. Supports any post type. Free and Pro versions
+Events calendar - the simple way. Easily display any WordPress post as an event on a flexible front-end calendar. Supports any post type.
 
 == Description ==
-**The Most Flexible Events Calendar Plugin for WordPress**
+**Create an event calendar in less than 4 minutes. Simple, flexible, and light-weight.**
 
 Pie Calendar lets you effortlessly turn any post on your WordPress site into an event, making it visible on a user-friendly front-end calendar. It doesn't lock you into any post type - use the default WordPress posts or pages, or create your own Custom Post Type (CPT).
 
@@ -88,6 +88,19 @@ Feel free to read our documentation for more detailed info: [docs.piecalendar.co
 1. default
 
 == Changelog ==
+
+= 1.3.0.4 =
+* Tweak: Addressed some more minor issues in the code to better comply with .org requirements.
+
+= 1.3.0.3 =
+* Tweak: Addressed a few minor issues turned up during a security review.
+* Tweak: Changed readme to comply with .org requirements.
+
+= 1.3.0.2 =
+* Tweak: Added hooks for additional event source support.
+
+= 1.3.0.1 =
+* Fix: Use multibyte safe function for limiting excerpt length to avoid breakages when multibyte characters are present.
 
 = 1.3.0 =
 * New: Added more robust method for allowing HTML in popover details. See docs for more info.

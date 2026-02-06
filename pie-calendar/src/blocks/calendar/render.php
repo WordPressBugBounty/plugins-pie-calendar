@@ -19,12 +19,13 @@ $atts = array(
 	'featuredimage'     => $attributes['featuredimage'] ? 'true' : 'false',
 	'duration'          => $attributes['duration'] ?? 1,
 	'hidepastevents'    => $attributes['hidepastevents'] ? 'true' : 'false',
+	'sources'           => $attributes['sources'] ?? null,
 );
 
 /**
  * Adds an extra filter when passing the calendar block attributes.
  */
-$atts = apply_filters( 'piecal_calendar_block_atts', $atts );
+$atts = apply_filters( 'piecal_calendar_block_atts', $atts, $attributes );
 
 // Get existing wrapper attributes
 $wrapper_attributes = get_block_wrapper_attributes();
@@ -35,6 +36,6 @@ if (!empty($atts['theme'])) {
 }
 
 ?>
-<div <?php echo $wrapper_attributes; ?>>
+<div <?php echo wp_kses_post( $wrapper_attributes ); ?>>
 	<?php echo piecal_render_calendar( $atts ); ?>
 </div>

@@ -1,6 +1,6 @@
-const { __ } = wp.i18n;
-
 let piecalJS = (function() {
+    const { __ } = wp.i18n;
+    
     function init( options ) {
         if( typeof options !== 'object' ) {
             throw new Error('Options must be an object');
@@ -71,7 +71,7 @@ let piecalJS = (function() {
         Alpine.store("calendarEngine").eventTitle = info.event._def.title;
         Alpine.store("calendarEngine").eventStart = info.event.start;
         Alpine.store("calendarEngine").eventEnd = info.event.end;
-        Alpine.store("calendarEngine").eventDetails = info.event._def.extendedProps.details;
+        Alpine.store("calendarEngine").eventDetails = info.event._def.extendedProps.details ?? '';
         Alpine.store("calendarEngine").eventUrl = info.event._def.extendedProps.permalink;
         Alpine.store("calendarEngine").eventAllDay = info.event.allDay;
         Alpine.store("calendarEngine").eventType = info.event._def.extendedProps.postType;
@@ -81,7 +81,10 @@ let piecalJS = (function() {
 
         // Always pass through event data via the URL if it's a recurring instance, or if adaptive timezones are enabled.
         // Do not pass through event data via the URL if it's a non-recurring instance and adaptive timezones are disabled.
-        if( info.event._def.extendedProps.isRecurringInstance || ( !info.event._def.extendedProps.isRecurringInstance && piecalVars.useAdaptiveTimezones && Alpine.store('calendarEngine').appendOffset ) ) {
+        if( info.event._def.extendedProps.isRecurringInstance || 
+            ( !info.event._def.extendedProps.isRecurringInstance && piecalVars.useAdaptiveTimezones && Alpine.store('calendarEngine').appendOffset ) &&
+            info.event._def.extendedProps.permalink ) {
+
             // Construct the URL with parameters
             const baseUrl    = info.event._def.extendedProps.permalink;
             const eventStart = new Date( info.event.start );
