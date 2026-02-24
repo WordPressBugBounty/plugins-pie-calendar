@@ -3,9 +3,9 @@ Contributors: apexws, spellhammer
 Tags: events, calendar, event
 Donate link: https://piecalendar.com
 Requires at least: 5.9
-Tested up to: 6.9
+Tested up to: 6.9.1
 Requires PHP: 7.4
-Stable tag: 1.3.0.4
+Stable tag: 1.3.0.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -88,6 +88,11 @@ Feel free to read our documentation for more detailed info: [docs.piecalendar.co
 1. default
 
 == Changelog ==
+
+= 1.3.0.5 = 
+* i18n: Made Pie Calendar Info block controls translatable via Loco Translate or other methods.
+* Tweak: Added white-space handling for popover details to handle \n in descriptions.
+* Fix: Corrected error caused by switching to Week - Time Grid or Week - Day Grid while hidePastEvents="true" attribute is in use.
 
 = 1.3.0.4 =
 * Tweak: Addressed some more minor issues in the code to better comply with .org requirements.

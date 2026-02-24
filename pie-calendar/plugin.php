@@ -9,7 +9,7 @@
  * Plugin Name:       Pie Calendar
  * Plugin URI:        https://piecalendar.com
  * Description:       Turn any post type into a calendar event and display it on a calendar.
- * Version:           1.3.0.4
+ * Version:           1.3.0.5
  * Author:            Elijah Mills & Jonathan Jernigan
  * Author URI:        https://piecalendar.com/about
  * License:           GPL-2.0+
@@ -25,7 +25,7 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-define( 'PIECAL_VERSION', '1.3.0.4' );
+define( 'PIECAL_VERSION', '1.3.0.5' );
 define( 'PIECAL_PATH', plugin_dir_url( __FILE__ ) );
 define( 'PIECAL_DIR', plugin_dir_path( __FILE__ ) );
 

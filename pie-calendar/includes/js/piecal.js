@@ -246,6 +246,8 @@ let piecalJS = (function() {
     function dayHeaderDidMount( info, options = {} ) {
         let dayHeaderLink = info.el.querySelector('a');
 
+        if( !dayHeaderLink ) return;
+
         let fullDayName = piecalUtils.getShortenedDayNames(info.text, 'full');
         let shortDayName = piecalUtils.getShortenedDayNames(info.text, 'short');
         let singleLetterDayName = piecalUtils.getShortenedDayNames(info.text, 'single');

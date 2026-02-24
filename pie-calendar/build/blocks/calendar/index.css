@@ -154,6 +154,10 @@
     margin-block-end: 0;
 }
 
+.piecal-popover__details {
+    white-space: pre-line;
+}
+
 .piecal-popover__close-button {
     display: flex;
     align-items: center;
