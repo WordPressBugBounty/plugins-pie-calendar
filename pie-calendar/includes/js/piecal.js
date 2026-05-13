@@ -248,16 +248,30 @@ let piecalJS = (function() {
 
         if( !dayHeaderLink ) return;
 
-        let fullDayName = piecalUtils.getShortenedDayNames(info.text, 'full');
-        let shortDayName = piecalUtils.getShortenedDayNames(info.text, 'short');
-        let singleLetterDayName = piecalUtils.getShortenedDayNames(info.text, 'single');
+        let fullDayName = piecalUtils.getLocalizedDayNames(info.text, 'full', options.locale );
+        let shortDayName = piecalUtils.getLocalizedDayNames(info.text, 'short', options.locale );
+        let singleLetterDayName = piecalUtils.getLocalizedDayNames(info.text, 'single', options.locale );
 
-        let shortenableViews = ['dayGridMonth', 'timeGridWeek', 'dayGridWeek'];
+        let shortenableViews = ['dayGridMonth', 'timeGridWeek', 'dayGridWeek', 'listWeek'];
+        let viewsWithDates = ['timeGridWeek', 'listWeek', 'dayGridWeek'];
 
         if( shortenableViews.includes(info.view.type) ) {
-            dayHeaderLink.innerHTML = `<span class="piecal-grid-day-header-text piecal-grid-day-header-text--full">${fullDayName}</span>
-                                       <span class="piecal-grid-day-header-text piecal-grid-day-header-text--short">${shortDayName}</span>
-                                       <span class="piecal-grid-day-header-text piecal-grid-day-header-text--single-letter">${singleLetterDayName}</span>`;
+            if( viewsWithDates.includes(info.view.type) && options.showDates != false ) {
+                // Format the date from info.date
+                const dateFormatter = new Intl.DateTimeFormat(info.view.dateEnv.locale.codeArg, {
+                    month: 'numeric',
+                    day: 'numeric'
+                });
+                const formattedDate = dateFormatter.format(info.date);
+
+                dayHeaderLink.innerHTML = `<span class="piecal-grid-day-header-text piecal-grid-day-header-text--full">${fullDayName} ${formattedDate}</span>
+                                           <span class="piecal-grid-day-header-text piecal-grid-day-header-text--short">${shortDayName} ${formattedDate}</span>
+                                           <span class="piecal-grid-day-header-text piecal-grid-day-header-text--single-letter">${singleLetterDayName} ${formattedDate}</span>`;
+            } else {
+                dayHeaderLink.innerHTML = `<span class="piecal-grid-day-header-text piecal-grid-day-header-text--full">${fullDayName}</span>
+                                           <span class="piecal-grid-day-header-text piecal-grid-day-header-text--short">${shortDayName}</span>
+                                           <span class="piecal-grid-day-header-text piecal-grid-day-header-text--single-letter">${singleLetterDayName}</span>`;
+            }
         }
 
         return info;

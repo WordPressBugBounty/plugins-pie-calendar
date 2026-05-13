@@ -23,6 +23,7 @@ export const SUPPORTED_LOCALES = [
   { value: "hi", label: "Hindi" },
   { value: "hu", label: "Hungarian" },
   { value: "id", label: "Indonesian" },
+  { value: "is", label: "Icelandic" },
   { value: "it", label: "Italian" },
   { value: "ja", label: "Japanese" },
   { value: "ko", label: "Korean" },

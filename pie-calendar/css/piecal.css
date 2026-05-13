@@ -74,13 +74,12 @@
 
 .piecal-controls.fc .piecal-controls__navigation-button-group {
     display: flex;
-    gap: 0;
+    gap: 8px;
     margin-left: auto;
 }
 
 .piecal-controls.fc .piecal-controls__today-button {
     justify-content: center;
-    margin-right: 8px;
     text-transform: capitalize;
     max-width: 150px;
 }
@@ -92,6 +91,7 @@
 .piecal-controls.fc .piecal-controls__prev-button {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
+    margin-right: -8px;
 }
 
 .piecal-controls.fc .piecal-controls__next-button {
@@ -221,7 +221,7 @@
 /* Responsive Widget Mode */
 @media only screen and (min-width: 768px) {
     .piecal-wrapper:not(.piecal-wrapper--widget) .piecal-controls__back-to-month {
-        display: none;
+        
     }
 }
 

@@ -3,9 +3,9 @@ Contributors: apexws, spellhammer
 Tags: events, calendar, event
 Donate link: https://piecalendar.com
 Requires at least: 5.9
-Tested up to: 6.9.1
+Tested up to: 6.9.4
 Requires PHP: 7.4
-Stable tag: 1.3.0.5
+Stable tag: 1.3.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -88,6 +88,12 @@ Feel free to read our documentation for more detailed info: [docs.piecalendar.co
 1. default
 
 == Changelog ==
+
+= 1.3.1 =
+* Tweak: Show "Back to Full Month" button even when Widget Mode isn't enabled.
+* Tweaks: Dates are now shown in day headers for some views: 'timeGridWeek', 'listWeek', 'dayGridWeek'. Turn this off with new filter: add_filter('piecal_day_header_did_mount_showdates', function() { return false; }, 10, 1);
+* i18n: Added Icelandic to locale dropdown for calendar block.
+* i18n: Added Icelandic day names (including shortened versions) for when Icelandic is chosen as language or locale.
 
 = 1.3.0.5 = 
 * i18n: Made Pie Calendar Info block controls translatable via Loco Translate or other methods.

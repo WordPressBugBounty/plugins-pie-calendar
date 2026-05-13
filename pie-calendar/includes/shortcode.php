@@ -335,7 +335,12 @@ if ( ! function_exists( 'piecal_render_calendar' ) ) {
                         return info.text;
                     },
                     dayHeaderDidMount: function( info ) {
-                        info = piecalJS.dayHeaderDidMount( info );
+                        let defaultOptions = {
+                            showDates: <?php echo apply_filters('piecal_day_header_did_mount_showdates', 'true') ? 'true' : 'false' ?>,
+                            locale: "<?php echo esc_attr( $locale ); ?>"
+                        };
+
+                        info = piecalJS.dayHeaderDidMount( info, defaultOptions );
 
                         <?php do_action( 'piecal_additional_day_header_did_mount_js' ); ?>
                     },
@@ -452,12 +457,6 @@ if ( ! function_exists( 'piecal_render_calendar' ) ) {
                   <span class="visually-hidden" x-text="$store.calendarEngine.viewTitle + ' - current view is ' + $store.calendarEngine.calendarView"></span>
                   <span aria-hidden="true" x-text="$store.calendarEngine.viewTitle"></span>
                 </div>
-                <button 
-                    class="piecal-controls__back-to-month fc-button fc-button-primary"
-                    aria-label="<?php esc_attr_e( 'Back to full month view.', 'piecal' ); ?>"
-                    onClick="piecalChangeView('dayGridMonth')">
-                        <?php esc_html_e('Back To Full Month', 'piecal'); ?>
-                </button>
                 <label class="piecal-controls__view-chooser">
                     <?php
                     /* Translators: Label for calendar view chooser. */
@@ -472,6 +471,12 @@ if ( ! function_exists( 'piecal_render_calendar' ) ) {
                     </select>
                 </label>
                 <div class="piecal-controls__navigation-button-group">
+                    <button 
+                        class="piecal-controls__back-to-month fc-button fc-button-primary"
+                        aria-label="<?php esc_attr_e( 'Back to full month view.', 'piecal' ); ?>"
+                        onClick="piecalChangeView('dayGridMonth')">
+                            <?php esc_html_e('Back To Full Month', 'piecal'); ?>
+                    </button>
                     <button 
                     class="fc-button fc-button-primary piecal-controls__today-button"
                     @click="window.calendar.today(); $store.calendarEngine.viewTitle = window.calendar.currentData.viewTitle"
