@@ -3,9 +3,9 @@ Contributors: apexws, spellhammer
 Tags: events, calendar, event
 Donate link: https://piecalendar.com
 Requires at least: 5.9
-Tested up to: 6.9.4
+Tested up to: 7.1.2
 Requires PHP: 7.4
-Stable tag: 1.3.1
+Stable tag: 1.3.1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -88,6 +88,13 @@ Feel free to read our documentation for more detailed info: [docs.piecalendar.co
 1. default
 
 == Changelog ==
+
+= 1.3.1.1 =
+* Fix: Corrected fatal error caused by event sources missing when Connector isn't present.
+* Fix: Corrected too much whitespace between paragraphs in popover when HTML output is enabled.
+* Tweak: Swapped to theoretically more reliable "is Block Editor" check for determining when to use classic metaboxes.
+* A11y: Various a11y fixes for listUpcoming view.
+
 
 = 1.3.1 =
 * Tweak: Show "Back to Full Month" button even when Widget Mode isn't enabled.

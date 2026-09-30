@@ -165,6 +165,12 @@ let piecalJS = (function() {
             link.setAttribute('aria-label', `${descriptionText} ${startDate} ${startTime} ${spanText} ${endDate} ${endTime} - ${info.event.title}`);
         }
 
+        // Remove unnecessary aria-hidden from dot td
+        info.el.querySelector('.fc-list-event-graphic')?.removeAttribute('aria-hidden');
+
+        // Remove unnecessary tabindex from links in list views
+        info.el.querySelector('.fc-list-event-title > a')?.removeAttribute('tabindex');
+
         return info;
     }
 

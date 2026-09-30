@@ -111,8 +111,8 @@ Class General {
             return false;
         }
 
-        // Check if block editor is actually loaded by looking for its core assets
-        if (wp_script_is('wp-block-editor') || wp_script_is('wp-blocks')) {
+        $current_screen = get_current_screen();
+        if ( $current_screen && $current_screen->is_block_editor() ) {
             return false;
         }
 
@@ -152,6 +152,12 @@ Class General {
         $excerpt = strip_shortcodes( $excerpt );
 
         $excerpt = $allowHTML ? wp_kses_post( $excerpt ) : wp_strip_all_tags( $excerpt );
+
+        if( !$allowHTML ) {
+            $excerpt = preg_replace( '/[ \t]*\R[ \t]*/', "\n", $excerpt );
+            $excerpt = preg_replace( "/\n{3,}/", "\n\n", $excerpt );
+            $excerpt = trim( $excerpt );
+        }
 
         if( strlen( $excerpt ) > $length ) {
             $excerpt = mb_substr( $excerpt, 0, $length ) . '...';

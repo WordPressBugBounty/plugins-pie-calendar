@@ -185,13 +185,15 @@ function piecal_get_events( $request ) {
         $events
     ];
 
-	foreach( $atts['allAttributes']['sources'] as $key => $value ) {
+	$sources = isset( $atts['allAttributes']['sources'] ) && is_array( $atts['allAttributes']['sources'] ) ? $atts['allAttributes']['sources'] : array();
+
+	foreach( $sources as $key => $value ) {
 		if( !$value || $value == 'false' ) {
-			unset( $atts['allAttributes']['sources'][$key] );
+			unset( $sources[$key] );
 		}	
 	}
 
-	$atts['allAttributes']['sources'] = array_keys( $atts['allAttributes']['sources'] );
+	$atts['allAttributes']['sources'] = array_keys( $sources );
 
     $eventSources = apply_filters('piecal_event_sources', $eventSources, null, null, ( ! isset( $atts['allAttributes']['adaptivetimezone'] ) && apply_filters( 'piecal_use_adaptive_timezones', false ) ), $atts['allAttributes']);
 
