@@ -154,7 +154,7 @@ Class General {
         $excerpt = $allowHTML ? wp_kses_post( $excerpt ) : wp_strip_all_tags( $excerpt );
 
         if( !$allowHTML ) {
-            $excerpt = preg_replace( '/[ \t]*\R[ \t]*/', "\n", $excerpt );
+            $excerpt = preg_replace( '/[ \t]*\R[ \t]*/u', "\n", $excerpt );
             $excerpt = preg_replace( "/\n{3,}/", "\n\n", $excerpt );
             $excerpt = trim( $excerpt );
         }

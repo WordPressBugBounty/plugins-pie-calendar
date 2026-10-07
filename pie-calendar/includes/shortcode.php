@@ -308,7 +308,7 @@ if ( ! function_exists( 'piecal_render_calendar' ) ) {
                     eventDataTransform: function(event) {  
                         event = piecalJS.eventDataTransform( event );
 
-                        <?php do_action( 'piecal_additional_event_data_transform_js' ); ?>
+                        <?php do_action( 'piecal_additional_event_data_transform_js', $appendOffset ); ?>
 
                         return event;  
                     },
